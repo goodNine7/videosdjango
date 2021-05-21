@@ -1,0 +1,74 @@
+{% extends 'base.html' %} {% block content %}
+<main class="w-full h-2/3 px-52 relative top-24">
+  <div
+    class="
+      absolute
+      top-1/2
+      left-1/2
+      z-1040
+      transform
+      -translate-x-1/2 -translate-y-1/2
+      bg-white
+      w-100
+      p-10
+      rounded-xl
+      shadow-md
+    "
+  >
+    <div class="text-xl font-bold text-center">Sign Out</div>
+    <form action="" class="">
+      <h1 class="py-2 text-lg tracking-wide">
+        Are you sure you want to sign out?
+      </h1>
+      <div class="my-8 h-10 relative overflow-hidden rounded-md">
+        <div class="flex justify-around w-full h-full">
+          <button
+            type="button"
+            class="
+              py-1
+              px-3
+              font-semibold
+              text-lg
+              uppercase
+              tracking-wide
+              border-none
+              outline-none
+              rounded-md
+              focus:outline-none
+              bg-gradient-to-r
+              from-green-400
+              to-blue-400
+              hover:from-pink-400
+              hover:to-yellow-400
+            "
+          >
+            Submit
+          </button>
+          <button
+            type="button"
+            class="
+              py-1
+              px-3
+              font-semibold
+              text-lg
+              uppercase
+              tracking-wide
+              border-none
+              outline-none
+              rounded-md
+              focus:outline-none
+              bg-gradient-to-r
+              from-green-400
+              to-blue-400
+              hover:from-pink-400
+              hover:to-yellow-400
+            "
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+{% endblock %}

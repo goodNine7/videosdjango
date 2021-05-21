@@ -1,0 +1,70 @@
+{% load static %}
+<div
+  class="
+    fixed
+    top-9
+    right-0
+    left-0
+    z-1040
+    bg-primarybgn
+    text-gray-300
+    flex
+    items-center
+    px-52
+    h-15
+  "
+>
+  <div class="mr-10 h-full flex-shrink-0">
+    <a href="#"
+      ><img src="{% static '../static/image/logo.png' %}" alt="logo"
+    /></a>
+  </div>
+  <div class="w-full flex justify-between items-center">
+    <ul class="flex font-semibold tracking-wide">
+      <li class="cursor-pointer">
+        <a href="#">
+          <span>Videos</span>
+        </a>
+      </li>
+      <li class="ml-4 cursor-pointer">
+        <a href="#">
+          <span>Category</span>
+        </a>
+      </li>
+    </ul>
+    <div class="flex">
+      <div class="ml-4 cursor-pointer">
+        <button
+          type="button"
+          class="
+            w-full
+            bg-gradient-to-r
+            from-green-400
+            to-blue-400
+            hover:from-pink-400
+            hover:to-yellow-400
+            text-black
+            py-1
+            px-3
+            font-semibold
+            rounded
+            tracking-wide
+            border-none
+            focus:outline-none
+          "
+        >
+          UPLOAD
+        </button>
+      </div>
+      <div class="ml-4 float-left">
+        <input
+          type="text"
+          name="search"
+          id="search"
+          placeholder="Search"
+          class="w-32 lg:w-full py-1 px-3 rounded text-black focus:outline-none"
+        />
+      </div>
+    </div>
+  </div>
+</div>
