@@ -5,11 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{% static '../static/css/style.css' %}" />
-    <title>trytailwindcss</title>
+    <title>{% block head_title %} Videos {% endblock %}</title>
+    {% block extra_head %}{% endblock %}
   </head>
   <body class="bg-primarybgc font-sans">
     <!-- content wrapper-->
-    {% include 'topnav_videos.html' %} {% include 'navbar_videos.html' %} 
+    {% block body %}
+    {% include 'topnav_videos.html' %} {% include 'navbar_videos.html' %}
     {% block content %}
     <main class="w-full h-full px-52 relative top-24 mt-8">
       <div class="">
@@ -424,6 +426,9 @@
         </div>
       </div>
     </main>
+    {% endblock %}
+    {% endblock %}
+    {% block extra_body %}
     {% endblock %}
   </body>
 </html>

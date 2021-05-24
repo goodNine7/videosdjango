@@ -1,4 +1,9 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% load i18n %}
+{% load account socialaccount %}
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% block content %}
+{% get_providers as socialaccount_providers %}
 <main class="w-full h-2/3 px-52 relative top-24">
   <div
     class="
@@ -31,11 +36,20 @@
             clip-rule="evenodd"
           /></svg></a
     ></label>
+    {% if socialaccount_providers %}
+      <div class="socialaccount_ballot">
+        <ul class="socialaccount_providers">
+          {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+        </ul>
+      </div>
+    {% endif %}
     <div class="text-xl font-bold text-center">Member Login</div>
-    <form action="" class="">
+    <form action="{% url 'account_login' %}" class="login" method="POST">
+      {% csrf_token %}
       <div class="relative w-full h-10 my-4">
         <input
           type="text"
+          name="login"
           placeholder="Username"
           class="
             w-full
@@ -48,6 +62,9 @@
             pl-10
             focus:shadow-md
           "
+          autocomplete="username"
+          maxlength="150"
+          id="id_login"
           required
         />
         <div class="h-full absolute top-0 left-0 border-r p-2">
@@ -67,7 +84,8 @@
       </div>
       <div class="relative w-full h-10 my-4">
         <input
-          type="text"
+          type="password"
+          name="password"
           placeholder="Password"
           class="
             w-full
@@ -80,6 +98,8 @@
             pl-10
             focus:shadow-md
           "
+          autocomplete="current-password"
+          id="id_password"
           required
         />
         <div class="h-full absolute top-0 left-0 border-r p-2">
@@ -97,21 +117,10 @@
           </svg>
         </div>
       </div>
-      <div class="text-blue-400"><a href="#">Forgot password?</a></div>
+      <div class="text-blue-400"><a href="{% url 'account_reset_password' %}">Forgot password?</a></div>
       <div class="my-8 h-10 relative overflow-hidden rounded-md">
-        <div
-          class="
-            w-full
-            h-full
-            absolute
-            -z-1
-            bg-gradient-to-r
-            from-green-400
-            to-blue-400
-          "
-        ></div>
         <button
-          type="button"
+          type="submit"
           class="
             h-full
             w-full
@@ -123,6 +132,8 @@
             outline-none
             focus:outline-none
             bg-gradient-to-r
+            from-green-400
+            to-blue-400
             hover:from-pink-400
             hover:to-yellow-400
           "
@@ -132,7 +143,9 @@
       </div>
       <div class="text-center">
         Not a member?
-        <a href="#" class="text-blue-400 font-semibold">Sign up</a>
+        <a href="{{ signup_url }}" class="text-blue-400 font-semibold"
+          >Sign up</a
+        >
       </div>
     </form>
   </div>

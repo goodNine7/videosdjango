@@ -21,10 +21,12 @@ from videos.views import home_view, login_view, sign_up_view, logout_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('account/', include('allauth.urls')),
     path('', home_view, name="index"),
     path('login/', login_view, name="login"),
     path('signup/', sign_up_view, name="signup"),
     path('logout/', logout_view, name="logout")
 ]
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.STATIC_URL,
+                          document_root=settings.STATIC_ROOT)

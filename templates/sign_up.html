@@ -1,4 +1,7 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+{% load i18n %}
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+{% block content %}
 <main class="w-full h-2/3 px-52 relative top-24">
   <div
     class="
@@ -32,11 +35,16 @@
           /></svg></a
     ></label>
     <div class="text-xl font-bold text-center">Sign Up</div>
-    <form action="" class="">
+    <form action="{% url 'account_signup' %}" class="signup" id="signup_form" method="post">
+      {% csrf_token %}
       <div class="relative w-full h-10 my-4">
         <input
           type="text"
           placeholder="Username"
+          name="username"
+          autocomplete="username"
+          minlength="1"
+          id="id_username"
           class="
             w-full
             h-full
@@ -67,8 +75,11 @@
       </div>
       <div class="relative w-full h-10 my-4">
         <input
-          type="text"
+          type="password"
+          name="password1"
+          id="id_password1"
           placeholder="Password"
+          autocomplete="new-password"
           class="
             w-full
             h-full
@@ -99,8 +110,10 @@
       </div>
       <div class="relative w-full h-10 my-4">
         <input
-          type="text"
-          placeholder="Password again"
+          type="password"
+          name="password2"
+          id="id_password2"
+          placeholder="Password (again)"
           class="
             w-full
             h-full
@@ -142,7 +155,7 @@
           "
         ></div>
         <button
-          type="button"
+          type="submit"
           class="
             h-full
             w-full
@@ -163,7 +176,7 @@
       </div>
       <div class="text-center">
         Already have an account?
-        <a href="#" class="text-blue-400 font-semibold">Login</a>
+        <a href="{{ login_url }}" class="text-blue-400 font-semibold">Login</a>
       </div>
     </form>
   </div>
