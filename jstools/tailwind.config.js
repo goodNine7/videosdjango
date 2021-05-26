@@ -15,7 +15,10 @@ module.exports = {
       },
       spacing: {
         100: '25rem',
-        15: '3.75rem'
+        15: '3.75rem',
+        292.5: '73.125rem',
+        242.5: '60.625rem',
+        187.5: '46.875rem'
       },
       width: (theme) => ({
         ...theme('spacing'),

@@ -1,10 +1,6 @@
-{% extends 'base.html' %}
-{% load i18n %}
-{% load account socialaccount %}
-{% block head_title %}{% trans "Sign In" %}{% endblock %}
-{% block content %}
-{% get_providers as socialaccount_providers %}
-<main class="w-full h-2/3 px-52 relative top-24">
+{% extends 'base.html' %} {% load i18n %} {% load account socialaccount %}
+ {% block head_title %}{% trans "Sign In" %}{% endblock %} {% block content %} {% get_providers as socialaccount_providers %}
+<main class="w-full h-2/3 relative top-24">
   <div
     class="
       absolute
@@ -37,11 +33,11 @@
           /></svg></a
     ></label>
     {% if socialaccount_providers %}
-      <div class="socialaccount_ballot">
-        <ul class="socialaccount_providers">
-          {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-        </ul>
-      </div>
+    <div class="socialaccount_ballot">
+      <ul class="socialaccount_providers">
+        {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+      </ul>
+    </div>
     {% endif %}
     <div class="text-xl font-bold text-center">Member Login</div>
     <form action="{% url 'account_login' %}" class="login" method="POST">
@@ -117,7 +113,9 @@
           </svg>
         </div>
       </div>
-      <div class="text-blue-400"><a href="{% url 'account_reset_password' %}">Forgot password?</a></div>
+      <div class="text-blue-400">
+        <a href="{% url 'account_reset_password' %}">Forgot password?</a>
+      </div>
       <div class="my-8 h-10 relative overflow-hidden rounded-md">
         <button
           type="submit"

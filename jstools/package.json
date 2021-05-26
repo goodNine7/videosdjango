@@ -9,7 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "build-css": "tailwind build ../static/css/tailwindcss.css -o ../static/css/style.css"
+    "build-css": "tailwind build ../static/css/tailwindcss.css -o ../static/css/styles.css"
   },
   "keywords": [],
   "author": "",

@@ -7,37 +7,41 @@
     right-0
     left-0
     z-1040
+    w-full
     h-9
+    leading-9
     font-semibold
   "
 >
-  <ul class="flex justify-start lg:justify-end items-center px-52">
-    {% if user.is_authenticated %}
-    <li>
-      <a class="cursor-pointer flex-shrink-0" href="{% url 'account_email' %}"
-        >Change E-mail</a
-      >
-    </li>
-    <li>
-      <a
-        class="ml-4 cursor-pointer flex-shrink-0"
-        href="{% url 'account_logout' %}"
-        >Sign Out</a
-      >
-    </li>
-    {% else %}
-    <li>
-      <a class="cursor-pointer flex-shrink-0" href="{% url 'account_login' %}"
-        >Sign In</a
-      >
-    </li>
-    <li>
-      <a
-        class="ml-4 cursor-pointer flex-shrink-0"
-        href="{% url 'account_signup' %}"
-        >Sign Up</a
-      >
-    </li>
-    {% endif %}
-  </ul>
+  <div class="xl:w-292.5 lg:w-242.5 md:w-187.5 mx-auto px-4">
+    <ul class="flex justify-start lg:justify-end items-center">
+      {% if user.is_authenticated %}
+      <li>
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_email' %}"
+          >Change E-mail</a
+        >
+      </li>
+      <li>
+        <a
+          class="ml-4 cursor-pointer flex-shrink-0"
+          href="{% url 'account_logout' %}"
+          >Sign Out</a
+        >
+      </li>
+      {% else %}
+      <li>
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_login' %}"
+          >Login</a
+        >
+      </li>
+      <li>
+        <a
+          class="ml-4 cursor-pointer flex-shrink-0"
+          href="{% url 'account_signup' %}"
+          >Sign Up</a
+        >
+      </li>
+      {% endif %}
+    </ul>
+  </div>
 </div>
