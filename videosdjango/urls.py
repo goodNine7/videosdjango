@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from videos.views import home_view, login_view, sign_up_view, logout_view
+from videos.views import home_view, login_view, sign_up_view, logout_view, user_view, upload_video_view, user_edit_view, user_avatar_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,7 +25,11 @@ urlpatterns = [
     path('', home_view, name="index"),
     path('login/', login_view, name="login"),
     path('signup/', sign_up_view, name="signup"),
-    path('logout/', logout_view, name="logout")
+    path('logout/', logout_view, name="logout"),
+    path('user/', user_view, name="user"),
+    path('upload/video', upload_video_view, name="upload_video"),
+    path('user/edit', user_edit_view, name="user_edit"),
+    path('user/avatar', user_avatar_view, name="user_avatar")
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,
