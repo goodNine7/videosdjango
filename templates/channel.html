@@ -1,0 +1,243 @@
+{%extends 'base.html'%}
+{%load static%}
+{%block content%}
+<main class="w-full relative top-20 mt-8">
+  <div class="xl:w-292.5 lg:w-242.5 md:w-187.5 mx-auto px-4">
+    {%block content_channel%}
+    <div class="flex">
+      <div class="w-1/3 px-4">
+        <div class="px-4 pb-4 text-xl font-semibold tracking-wide">
+          <p>Profile</p>
+        </div>
+        <div class="bg-primarybgu px-4 py-2 border-b border-gray-200">
+          <span>{{channel.name}}</span>
+        </div>
+        <div class="bg-white px-4 py-2 flex-col h-56 mb-4">
+          <ul class="text-sm font-semibold leading-8 pb-2 flex justify-start">
+            <li>
+              <a href="{%url 'channel_edit' channel.slug%}" class="text-blue-400">Edit Profile</a>
+            </li>
+            <li class="mx-2"><strong>·</strong></li>
+            <li>
+              <a href="{%url 'user_avatar'%}" class="text-blue-400">Change Avatar</a>
+            </li>
+          </ul>
+          <div class="flex pb-2 justify-start">
+            <div class="w-30 h-30">
+              <div class="rounded overflow-hidden"><a href="#"><img src="{{channel.avatar.url}}" alt=""
+                    class="w-full h-full object-cover" /></a></div>
+              <div class="w-full h-8 bg-red-600 hover:bg-red-700 text-white items-center mt-2 rounded">
+                <button type="button" class="w-full h-full focus:outline-none font-semibold text-base">Subcribe</button>
+              </div>
+            </div>
+            <div class="w-1/2 ml-5">
+              <ul class="">
+                <li>Total Videos: <span>97</span></li>
+                <li>Total Views: <span>97</span></li>
+                <li>Total Subcriber: <span>10</span></li>
+                <li>Joined: <span>1 day ago</span></li>
+                <li>Last Login: <span>1 day ago</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="bg-primarybgu px-4 py-2 border-b border-gray-200">
+          <span>Another actions</span>
+        </div>
+        <div class="bg-white px-4 py-2">
+          <ul class="text-sm font-semibold leading-8 pb-2 flex justify-start">
+            <li>
+              <a href="#" class="text-blue-400">Block user</a>
+            </li>
+            <li class="mx-2"><strong>·</strong></li>
+            <li>
+              <a href="#" class="text-blue-400">Report user</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="w-2/3 px-4">
+        {%block main%}
+        <div class="bg-primarybgu px-4 py-2 border-b border-gray-200 flex justify-between">
+          <div>Videos</div>
+          <div class="text-blue-400"><a href="#">View All...</a></div>
+        </div>
+        <div class="bg-white px-4 py-2 grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-8 mb-8">
+          <div class="bg-white rounded overflow-hidden shadow-md mb-2">
+            <div class="relative">
+              <div>
+                <a href="#">
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <span class="p-2 font-semibold">Video 1</span>
+                </a>
+              </div> 
+              <div class="
+                  bg-red-200
+                  font-semibold
+                  text-sm
+                  rounded-lg
+                  absolute
+                  bottom-8
+                  right-1
+                  p-1
+                ">
+                  <span>25 mins</span>
+                </div>
+            </div>
+            <div class="px-2">
+              <span class="block text-sm">13 days ago</span>
+              <span class="text-gray-500 text-sm float-left">100 views</span>
+              <span class="font-bold text-sm float-right">80%</span>
+            </div>
+          </div>
+          <div class="bg-white rounded overflow-hidden shadow-md mb-2">
+            <div class="relative">
+              <div>
+                <a href="#">
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <span class="p-2 font-semibold">Video 1</span>
+                </a>
+              </div> 
+              <div class="
+                  bg-red-200
+                  font-semibold
+                  text-sm
+                  rounded-lg
+                  absolute
+                  bottom-8
+                  right-1
+                  p-1
+                ">
+                  <span>25 mins</span>
+                </div>
+            </div>
+            <div class="px-2">
+              <span class="block text-sm">13 days ago</span>
+              <span class="text-gray-500 text-sm float-left">100 views</span>
+              <span class="font-bold text-sm float-right">80%</span>
+            </div>
+          </div>
+          <div class="bg-white rounded overflow-hidden shadow-md mb-2">
+            <div class="relative">
+              <div>
+                <a href="#">
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <span class="p-2 font-semibold">Video 1</span>
+                </a>
+              </div> 
+              <div class="
+                  bg-red-200
+                  font-semibold
+                  text-sm
+                  rounded-lg
+                  absolute
+                  bottom-8
+                  right-1
+                  p-1
+                ">
+                  <span>25 mins</span>
+                </div>
+            </div>
+            <div class="px-2">
+              <span class="block text-sm">13 days ago</span>
+              <span class="text-gray-500 text-sm float-left">100 views</span>
+              <span class="font-bold text-sm float-right">80%</span>
+            </div>
+          </div>
+          
+        </div>
+        <div class="bg-primarybgu px-4 py-2 border-b border-gray-200 flex justify-between">
+          <div>Playlist</div>
+          <div class="text-blue-400"><a href="#">View All...</a></div>
+        </div>
+        <div class="bg-white px-4 py-2 grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-8 mb-8">
+          <div class="bg-white rounded overflow-hidden shadow-md mb-2">
+            <div class="relative">
+              <div>
+                <a href="#">
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <span class="p-2 font-semibold">Video 1</span>
+                </a>
+              </div> 
+              <div class="
+                  bg-red-200
+                  font-semibold
+                  text-sm
+                  rounded-lg
+                  absolute
+                  bottom-8
+                  right-1
+                  p-1
+                ">
+                  <span>25 mins</span>
+                </div>
+            </div>
+            <div class="px-2">
+              <span class="block text-sm">13 days ago</span>
+              <span class="text-gray-500 text-sm float-left">100 views</span>
+              <span class="font-bold text-sm float-right">80%</span>
+            </div>
+          </div>
+          <div class="bg-white rounded overflow-hidden shadow-md mb-2">
+            <div class="relative">
+              <div>
+                <a href="#">
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <span class="p-2 font-semibold">Video 1</span>
+                </a>
+              </div> 
+              <div class="
+                  bg-red-200
+                  font-semibold
+                  text-sm
+                  rounded-lg
+                  absolute
+                  bottom-8
+                  right-1
+                  p-1
+                ">
+                  <span>25 mins</span>
+                </div>
+            </div>
+            <div class="px-2">
+              <span class="block text-sm">13 days ago</span>
+              <span class="text-gray-500 text-sm float-left">100 views</span>
+              <span class="font-bold text-sm float-right">80%</span>
+            </div>
+          </div>
+          <div class="bg-white rounded overflow-hidden shadow-md mb-2">
+            <div class="relative">
+              <div>
+                <a href="#">
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <span class="p-2 font-semibold">Video 1</span>
+                </a>
+              </div> 
+              <div class="
+                  bg-red-200
+                  font-semibold
+                  text-sm
+                  rounded-lg
+                  absolute
+                  bottom-8
+                  right-1
+                  p-1
+                ">
+                  <span>25 mins</span>
+                </div>
+            </div>
+            <div class="px-2">
+              <span class="block text-sm">13 days ago</span>
+              <span class="text-gray-500 text-sm float-left">100 views</span>
+              <span class="font-bold text-sm float-right">80%</span>
+            </div>
+          </div>
+          
+        </div>
+        {%endblock%}
+      </div>
+    </div>
+    {%endblock%}
+  </div>
+</main>
+{%endblock%}

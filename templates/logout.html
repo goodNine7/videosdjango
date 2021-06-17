@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 
 {% load i18n %}
-{% block head_title %}{% trans "Sign Out" %}{% endblock %}
+{% block head_title %}{% trans "Log Out" %}{% endblock %}
 
 
 {% block content %}
-<main class="w-full h-2/3 relative top-24">
-  <div
-    class="
+<main class="w-full h-2/3 relative top-24 mt-8">
+  <div class="
       absolute
       top-1/2
       left-1/2
@@ -19,60 +18,49 @@
       p-10
       rounded-xl
       shadow-md
-    "
-  >
-    <div class="text-xl font-bold text-center">Sign Out</div>
+    ">
+    <div class="text-xl font-bold text-center">Log Out</div>
     <form action="{% url 'account_logout' %}" class="" method="post">
       {% csrf_token %}
       <h1 class="py-2 text-lg tracking-wide">
-        Are you sure you want to sign out?
+        Are you sure you want to log out?
       </h1>
       <div class="my-8 h-10 relative overflow-hidden rounded-md">
         <div class="flex justify-around w-full h-full">
-          <button
-            type="submit"
-            class="
-              py-1
-              px-3
+          <button type="submit" class="
+              w-20
+              h-auto
+              py-2
               font-semibold
-              text-lg
               uppercase
               tracking-wide
               border-none
               outline-none
               rounded-md
               focus:outline-none
-              bg-gradient-to-r
-              from-green-400
-              to-blue-400
-              hover:from-pink-400
-              hover:to-yellow-400
-            "
-          >
+              bg-blue-300
+              hover:bg-blue-400
+              ">
             Submit
           </button>
-          <button
-            type="button"
-            class="
-              py-1
-              px-3
+          <a href="{%url 'index'%}" class="
+              w-20
+              h-auto
+              text-center
+              py-2
               font-semibold
-              text-lg
+              cursor-pointer
               uppercase
               tracking-wide
               border-none
               outline-none
               rounded-md
               focus:outline-none
-              bg-gradient-to-r
-              from-green-400
-              to-blue-400
-              hover:from-pink-400
-              hover:to-yellow-400
-            "
-          >
+              bg-blue-300
+              hover:bg-blue-400
+            ">
             Cancel
-          </button>
+          </a>
         </div>
       </div>
     </form>

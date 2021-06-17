@@ -1,3 +1,4 @@
+{% load %}
 <div
   class="
     bg-primarybgh
@@ -16,16 +17,22 @@
   <div class="xl:w-292.5 lg:w-242.5 md:w-187.5 mx-auto px-4">
     <ul class="flex justify-start lg:justify-end items-center">
       {% if user.is_authenticated %}
-      <li>
-        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_email' %}"
-          >Change E-mail</a
+      <!-- {% load account %}
+      <li class="px-2">
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}"
+          >{% user_display user %}</a
+        >
+      </li> -->
+      <li class="px-2">
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}"
+          >{{ channel.name }}</a
         >
       </li>
-      <li>
+      <li class="px-2">
         <a
-          class="ml-4 cursor-pointer flex-shrink-0"
+          class="cursor-pointer flex-shrink-0"
           href="{% url 'account_logout' %}"
-          >Sign Out</a
+          >Logout</a
         >
       </li>
       {% else %}
