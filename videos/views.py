@@ -1,7 +1,9 @@
-from typing import Text
+from os import name
 from django.shortcuts import redirect, render
 from .forms import EditChannelForm
 from videos.models import Channel
+from django.core.exceptions import ValidationError
+
 
 # Create your views here.
 def home_view(request):
@@ -24,23 +26,6 @@ def home_view(request):
         }
     return render(request, 'base.html', context)
 
-def login_view(request):
-    state = {
-        'context': ''
-    }
-    return render(request, 'login.html', state)
-
-def sign_up_view(request):
-    state = {
-        'context': ''
-    }
-    return render(request, 'sign_up.html', state)
-
-def logout_view(request):
-    state = {
-        'context': ''
-    }
-    return render(request, 'logout.html', state)
 
 def channel_view(request, slug):
     mychannel=Channel.objects.get(slug=slug)
@@ -52,10 +37,20 @@ def channel_view(request, slug):
 def channel_edit_view(request, slug):
     mychannel=Channel.objects.get(slug=slug)
     if request.method =="POST":
-        form=EditChannelForm(request.POST, request.FILES, instance=mychannel)
-        if form.is_valid():
-            form.save()
+        new_name=request.POST['name']
+        # list_name=[]
+        # all_name=Channel.objects.all()
+        # for x in all_name:
+        #     list_name.append(str(x))
+        # if new_name not in list_name:
+        if not Channel.objects.filter(name=new_name).exists():
+            form=EditChannelForm(request.POST, request.FILES, instance=mychannel)
+            if form.is_valid():
+                form.save()
             return redirect('channel', slug=request.user)
+        else:
+            raise ValidationError("You have forgotten about Fred!")
+
     else:
         form=EditChannelForm(instance=mychannel)
         context={
