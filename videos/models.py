@@ -15,12 +15,10 @@ def channel_directory_path(instance, filename):
     remove_duplicate_path(fullname)
     return fullname
 
-
 def avatar_directory_path(instance, filename):
     fullname="avatar/user_id_{0}/{1}".format(instance.user.id, filename)
     remove_duplicate_path(fullname)
     return fullname
-
 
 def thumbnail_directory_path(instance, filename):
     fullname="video_thumbnail/video_id_{0}/{1}".format(instance.videofile.id, filename)
@@ -36,7 +34,7 @@ class Category(models.Model):
         return self.name
 
 class Channel(models.Model):
-    name=models.CharField(max_length=200)
+    name=models.CharField(max_length=20)
     user=models.ForeignKey(User, on_delete=models.CASCADE)
     avatar=models.ImageField(upload_to=avatar_directory_path, default='default_avatar.jpg')
     slug=models.SlugField()

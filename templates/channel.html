@@ -6,13 +6,11 @@
     {%block content_channel%}
     <div class="flex">
       <div class="w-1/3 px-4">
-        <div class="px-4 pb-4 text-xl font-semibold tracking-wide">
-          <p>Profile</p>
-        </div>
         <div class="bg-primarybgu px-4 py-2 border-b border-gray-200">
           <span>{{channel.name}}</span>
         </div>
         <div class="bg-white px-4 py-2 flex-col h-56 mb-4">
+          {% if my_channel %}
           <ul class="text-sm font-semibold leading-8 pb-2 flex justify-start">
             <li>
               <a href="{%url 'channel_edit' channel.slug%}" class="text-blue-400">Edit Profile</a>
@@ -22,6 +20,17 @@
               <a href="#" class="text-blue-400">Change Avatar</a>
             </li>
           </ul>
+          {% else %}
+          <ul class="text-sm font-semibold leading-8 pb-2 flex justify-start">
+            <li>
+              <a href="#" class="text-blue-400">Like</a>
+            </li>
+            <li class="mx-2"><strong>·</strong></li>
+            <li>
+              <a href="#" class="text-blue-400">Dislike</a>
+            </li>
+          </ul>
+          {% endif %}
           <div class="flex pb-2 justify-start">
             <div class="w-30 h-30">
               <div class="rounded overflow-hidden"><a href="#"><img src="{{channel.avatar.url}}" alt=""
@@ -67,10 +76,11 @@
             <div class="relative">
               <div>
                 <a href="#">
-                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt=""
+                    class="w-full h-32 sm:h-48 object-cover" />
                   <span class="p-2 font-semibold">Video 1</span>
                 </a>
-              </div> 
+              </div>
               <div class="
                   bg-red-200
                   font-semibold
@@ -81,8 +91,8 @@
                   right-1
                   p-1
                 ">
-                  <span>25 mins</span>
-                </div>
+                <span>25 mins</span>
+              </div>
             </div>
             <div class="px-2">
               <span class="block text-sm">13 days ago</span>
@@ -94,10 +104,11 @@
             <div class="relative">
               <div>
                 <a href="#">
-                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt=""
+                    class="w-full h-32 sm:h-48 object-cover" />
                   <span class="p-2 font-semibold">Video 1</span>
                 </a>
-              </div> 
+              </div>
               <div class="
                   bg-red-200
                   font-semibold
@@ -108,8 +119,8 @@
                   right-1
                   p-1
                 ">
-                  <span>25 mins</span>
-                </div>
+                <span>25 mins</span>
+              </div>
             </div>
             <div class="px-2">
               <span class="block text-sm">13 days ago</span>
@@ -121,10 +132,11 @@
             <div class="relative">
               <div>
                 <a href="#">
-                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt=""
+                    class="w-full h-32 sm:h-48 object-cover" />
                   <span class="p-2 font-semibold">Video 1</span>
                 </a>
-              </div> 
+              </div>
               <div class="
                   bg-red-200
                   font-semibold
@@ -135,8 +147,8 @@
                   right-1
                   p-1
                 ">
-                  <span>25 mins</span>
-                </div>
+                <span>25 mins</span>
+              </div>
             </div>
             <div class="px-2">
               <span class="block text-sm">13 days ago</span>
@@ -144,7 +156,7 @@
               <span class="font-bold text-sm float-right">80%</span>
             </div>
           </div>
-          
+
         </div>
         <div class="bg-primarybgu px-4 py-2 border-b border-gray-200 flex justify-between">
           <div>Playlist</div>
@@ -155,10 +167,11 @@
             <div class="relative">
               <div>
                 <a href="#">
-                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt=""
+                    class="w-full h-32 sm:h-48 object-cover" />
                   <span class="p-2 font-semibold">Video 1</span>
                 </a>
-              </div> 
+              </div>
               <div class="
                   bg-red-200
                   font-semibold
@@ -169,8 +182,8 @@
                   right-1
                   p-1
                 ">
-                  <span>25 mins</span>
-                </div>
+                <span>25 mins</span>
+              </div>
             </div>
             <div class="px-2">
               <span class="block text-sm">13 days ago</span>
@@ -182,10 +195,11 @@
             <div class="relative">
               <div>
                 <a href="#">
-                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt=""
+                    class="w-full h-32 sm:h-48 object-cover" />
                   <span class="p-2 font-semibold">Video 1</span>
                 </a>
-              </div> 
+              </div>
               <div class="
                   bg-red-200
                   font-semibold
@@ -196,8 +210,8 @@
                   right-1
                   p-1
                 ">
-                  <span>25 mins</span>
-                </div>
+                <span>25 mins</span>
+              </div>
             </div>
             <div class="px-2">
               <span class="block text-sm">13 days ago</span>
@@ -209,10 +223,11 @@
             <div class="relative">
               <div>
                 <a href="#">
-                  <img src="{% static '../static/image/hotdog.jpg' %}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                  <img src="{% static '../static/image/hotdog.jpg' %}" alt=""
+                    class="w-full h-32 sm:h-48 object-cover" />
                   <span class="p-2 font-semibold">Video 1</span>
                 </a>
-              </div> 
+              </div>
               <div class="
                   bg-red-200
                   font-semibold
@@ -223,8 +238,8 @@
                   right-1
                   p-1
                 ">
-                  <span>25 mins</span>
-                </div>
+                <span>25 mins</span>
+              </div>
             </div>
             <div class="px-2">
               <span class="block text-sm">13 days ago</span>
@@ -232,7 +247,7 @@
               <span class="font-bold text-sm float-right">80%</span>
             </div>
           </div>
-          
+
         </div>
         {%endblock%}
       </div>
