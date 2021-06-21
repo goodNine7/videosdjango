@@ -51,6 +51,8 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_ON_GET = True
+# LOGOUT_REDIRECT_URL = '/channel/admin7'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -75,6 +77,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # "django.core.context_processors.i18n",
+                # "django.core.context_processors.media",
                 # Needed to login by username in Django admin, regardless of `allauth`
                 # 'django.contrib.auth.backends.ModelBackend',
                 # `allauth` specific authentication methods, such as login by e-mail

@@ -24,6 +24,11 @@
           <li class="flex justify-center"><span>{{ error_message }}</span></li>
       </ul>
     {% endif %}
+    {% if success_message %}
+      <ul class="errorlist relative top-24 bg-green-300 p-2 font-semibold flex-col">
+          <li class="flex justify-center"><span>{{ success_message }}</span></li>
+      </ul>
+    {% endif %}
     {% block content %}
     <main class="w-full h-full relative top-24 mt-8">
       <div class="xl:w-292.5 lg:w-242.5 md:w-187.5 mx-auto px-4">

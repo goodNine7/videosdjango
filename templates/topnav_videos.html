@@ -1,6 +1,5 @@
 {% load %}
-<div
-  class="
+<div class="
     bg-primarybgh
     text-gray-300
     fixed
@@ -12,8 +11,7 @@
     h-9
     leading-9
     font-semibold
-  "
->
+  ">
   <div class="xl:w-292.5 lg:w-242.5 md:w-187.5 mx-auto px-4">
     <ul class="flex justify-start lg:justify-end items-center">
       {% if user.is_authenticated %}
@@ -23,30 +21,25 @@
           >{% user_display user %}</a
         >
       </li> -->
+      {% if not channel.name %}
       <li class="px-2">
-        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}"
-          >{{ myuser.name }}</a
-        >
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}">{{ user }}</a>
       </li>
+      {% else %}
       <li class="px-2">
-        <a
-          class="cursor-pointer flex-shrink-0"
-          href="{% url 'account_logout' %}"
-          >Logout</a
-        >
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}">{{ mychannel.name }}</a>
+      </li>
+      {% endif %}
+
+      <li class="px-2">
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_logout' %}"">Logout</a>
       </li>
       {% else %}
       <li>
-        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_login' %}"
-          >Login</a
-        >
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_login' %}">Login</a>
       </li>
       <li>
-        <a
-          class="ml-4 cursor-pointer flex-shrink-0"
-          href="{% url 'account_signup' %}"
-          >Sign Up</a
-        >
+        <a class="ml-4 cursor-pointer flex-shrink-0" href="{% url 'account_signup' %}">Sign Up</a>
       </li>
       {% endif %}
     </ul>

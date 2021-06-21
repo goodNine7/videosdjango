@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from videos.views import home_view, channel_view, upload_video_view, channel_edit_view, user_avatar_view
+from videos.views import (home_view, channel_view,
+                          channel_edit_view, upload_video_view, user_avatar_view)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,5 +30,7 @@ urlpatterns = [
     path('user/avatar', user_avatar_view, name="user_avatar")
 ]
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL,
+                          document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

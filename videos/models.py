@@ -46,7 +46,6 @@ class VideoFiles(models.Model):
     id=models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     video=models.FileField(upload_to=channel_directory_path)
     channel=models.ForeignKey(Channel, on_delete=models.CASCADE)
-    category=models.ForeignKey(Category, on_delete=models.CASCADE)
     uploaded=models.DateTimeField(auto_now_add=True)
     def __str__(self):
             return f"video_file_{self.id}"
@@ -55,6 +54,7 @@ class VideoDetail(models.Model):
     videofile=models.OneToOneField(VideoFiles, on_delete=models.CASCADE)
     title=models.CharField(max_length=200)
     description=models.TextField(max_length=200, blank=True)
+    category=models.ForeignKey(Category, on_delete=models.CASCADE)
     visibility=models.BooleanField(choices=((False, "private"), (True, "public")))
     thumbnail=models.ImageField(upload_to=thumbnail_directory_path)
     def __str__(self):
