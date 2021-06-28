@@ -27,12 +27,12 @@
       </li>
       {% else %}
       <li class="px-2">
-        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}">{{ mychannel.name }}</a>
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}">{{ top_nav.name }}</a>
       </li>
       {% endif %}
 
       <li class="px-2">
-        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_logout' %}"">Logout</a>
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_logout'%}"">Logout</a>
       </li>
       {% else %}
       <li>

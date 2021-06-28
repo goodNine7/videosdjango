@@ -11,17 +11,17 @@ def remove_duplicate_path(fullname):
         os.remove(fullpathname)
 
 def channel_directory_path(instance, filename):
-    fullname="video_files/channel_id_{0}/{1}".format(instance.channel.id, filename)
+    fullname="video_files/channel_id_{0}/{1}".format(instance.channel.id, filename.replace(' ', '_'))
     remove_duplicate_path(fullname)
     return fullname
 
 def avatar_directory_path(instance, filename):
-    fullname="avatar/user_id_{0}/{1}".format(instance.user.id, filename)
+    fullname="avatar/user_id_{0}/{1}".format(instance.user.id, filename.replace(' ', '_'))
     remove_duplicate_path(fullname)
     return fullname
 
 def thumbnail_directory_path(instance, filename):
-    fullname="video_thumbnail/video_id_{0}/{1}".format(instance.videofile.id, filename)
+    fullname="video_thumbnail/video_id_{0}/{1}".format(instance.videofile.id, filename.replace(' ', '_'))
     remove_duplicate_path(fullname)
     return fullname
 

@@ -71,93 +71,43 @@
           <div>Videos</div>
           <div class="text-blue-400"><a href="#">View All...</a></div>
         </div>
+        {%if videos%}
+        {%for video in videos%}
         <div class="bg-white px-4 py-2 grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-8 mb-8">
-          <div class="bg-white rounded overflow-hidden shadow-md mb-2">
+          <div class="bg-white rounded overflow-hidden shadow-md">
             <div class="relative">
-              <div>
-                <a href="#">
-                  <img src="{% static '../static/image/hotdog.jpg' %}" alt=""
-                    class="w-full h-32 sm:h-48 object-cover" />
-                  <span class="p-2 font-semibold">Video 1</span>
-                </a>
-              </div>
-              <div class="
-                  bg-red-200
-                  font-semibold
-                  text-sm
-                  rounded-lg
-                  absolute
-                  bottom-8
-                  right-1
-                  p-1
-                ">
-                <span>25 mins</span>
-              </div>
+              <a href="#">
+                <img src="{{video.videodetail.thumbnail.url}}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+                <div class="
+                    bg-red-200
+                    font-semibold
+                    text-sm
+                    rounded-lg
+                    absolute
+                    bottom-0
+                    right-0
+                    m-1
+                    p-1
+                  ">
+                  <span>25 mins</span>
+                </div>
+              </a>
             </div>
-            <div class="px-2">
-              <span class="block text-sm">13 days ago</span>
-              <span class="text-gray-500 text-sm float-left">100 views</span>
-              <span class="font-bold text-sm float-right">80%</span>
+            <div class="p-2 flex-col justify-center">
+              <div class="font-semibold capitalize"><a href="#">{{video.videodetail.title}}</a></div>
+              <div class="flex justify-between">
+                <div class="text-gray-500 text-sm">100 views</div>
+                <div class="text-sm">13 days ago</div>
+              </div>
             </div>
           </div>
-          <div class="bg-white rounded overflow-hidden shadow-md mb-2">
-            <div class="relative">
-              <div>
-                <a href="#">
-                  <img src="{% static '../static/image/hotdog.jpg' %}" alt=""
-                    class="w-full h-32 sm:h-48 object-cover" />
-                  <span class="p-2 font-semibold">Video 1</span>
-                </a>
-              </div>
-              <div class="
-                  bg-red-200
-                  font-semibold
-                  text-sm
-                  rounded-lg
-                  absolute
-                  bottom-8
-                  right-1
-                  p-1
-                ">
-                <span>25 mins</span>
-              </div>
-            </div>
-            <div class="px-2">
-              <span class="block text-sm">13 days ago</span>
-              <span class="text-gray-500 text-sm float-left">100 views</span>
-              <span class="font-bold text-sm float-right">80%</span>
-            </div>
-          </div>
-          <div class="bg-white rounded overflow-hidden shadow-md mb-2">
-            <div class="relative">
-              <div>
-                <a href="#">
-                  <img src="{% static '../static/image/hotdog.jpg' %}" alt=""
-                    class="w-full h-32 sm:h-48 object-cover" />
-                  <span class="p-2 font-semibold">Video 1</span>
-                </a>
-              </div>
-              <div class="
-                  bg-red-200
-                  font-semibold
-                  text-sm
-                  rounded-lg
-                  absolute
-                  bottom-8
-                  right-1
-                  p-1
-                ">
-                <span>25 mins</span>
-              </div>
-            </div>
-            <div class="px-2">
-              <span class="block text-sm">13 days ago</span>
-              <span class="text-gray-500 text-sm float-left">100 views</span>
-              <span class="font-bold text-sm float-right">80%</span>
-            </div>
-          </div>
-
         </div>
+        {%endfor%}
+        {%else%}
+        <div class="bg-white px-4 py-2 grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-8 mb-8">
+          <p class="p-2">Do not have any videos...</p>
+        </div>
+        {%endif%}
         <div class="bg-primarybgu px-4 py-2 border-b border-gray-200 flex justify-between">
           <div>Playlist</div>
           <div class="text-blue-400"><a href="#">View All...</a></div>

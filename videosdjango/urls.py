@@ -17,17 +17,18 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from videos.views import (home_view, channel_view,
-                          channel_edit_view, upload_video_view, user_avatar_view)
+from videos.views import (home, channel,
+                          channel_edit, upload_video, upload_processing, video_info_process)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('allauth.urls')),
-    path('', home_view, name="index"),
-    path('channel/<slug>/', channel_view, name="channel"),
-    path('channel/<slug>/edit', channel_edit_view, name="channel_edit"),
-    path('upload/video', upload_video_view, name="upload_video"),
-    path('user/avatar', user_avatar_view, name="user_avatar")
+    path('', home, name="index"),
+    path('channel/<slug>/', channel, name="channel"),
+    path('channel/<slug>/edit', channel_edit, name="channel_edit"),
+    path('upload/', upload_video, name="upload_video"),
+    path('uploading/', upload_processing, name="processing"),
+    path('video_detail/', video_info_process, name="video_data")
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,
