@@ -18,7 +18,11 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from videos.views import (home, channel,
-                          channel_edit, upload_video, upload_processing, video_info_process)
+                          channel_edit,
+                          upload_video,
+                          upload_processing,
+                          video_info_process,
+                          video_watch_view)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,7 +32,8 @@ urlpatterns = [
     path('channel/<slug>/edit', channel_edit, name="channel_edit"),
     path('upload/', upload_video, name="upload_video"),
     path('uploading/', upload_processing, name="processing"),
-    path('video_detail/', video_info_process, name="video_data")
+    path('video_detail/', video_info_process, name="video_data"),
+    path('watch/?v=<video_id>', video_watch_view, name="video_watch")
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,

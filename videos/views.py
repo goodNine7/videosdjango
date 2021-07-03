@@ -1,18 +1,18 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import EditChannelForm
-from videos.models import Channel, VideoFiles, VideoDetail, Category
+from videos.models import Channel, VideoFiles, VideoDetail, Category, ViewCount
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.messages import get_messages
-
-
-
+from moviepy.editor import VideoFileClip
+from datetime import timedelta
+import math
 
 # Create your views here.
 def home(request):
     allvideos = VideoFiles.objects.all()
-    allvideos = allvideos.filter(videodetail__visibility=True)
+    allvideos = allvideos.filter(video_detail__visibility=True)
     try:
         current_user = request.user
         try:
@@ -126,6 +126,8 @@ def upload_video(request):
     messages=''
     if(list(get_messages(request))):
         messages=list(get_messages(request))[0]
+        if(str(messages) != "You have successfully uploaded a video"):
+            messages=''
     if request.user.id:
         channel = Channel.objects.get(user=request.user.id)
         context = {
@@ -173,11 +175,26 @@ def video_info_process(request):
         category = Category.objects.get(pk=request.POST['category'])
         visibility = request.POST['visibility']
         thumbnail = request.FILES['thumbnail']
-
-        video = get_object_or_404(VideoFiles, id=file_id)
+        videofile = get_object_or_404(VideoFiles, id=file_id)
+        video_url = "http://localhost:8000{}".format(videofile.video.url)
+        video_duration = timedelta(seconds=math.floor(VideoFileClip(video_url).duration))
         VideoDetail.objects.create(
-            videofile=video, title=title, description=desc, category=category, visibility=visibility, thumbnail=thumbnail)
-        messages.add_message(request, messages.INFO, "You have successfully uploaded a video")
-        # messages.success(request, "Your Message")
+            videofile=videofile, title=title, description=desc, category=category, visibility=visibility, thumbnail=thumbnail, durations=video_duration)
+        # messages.add_message(request, messages.INFO, "You have successfully uploaded a video")
+        messages.success(request, "You have successfully uploaded a video")
         return redirect('upload_video')
     return redirect('upload_video')
+
+
+def video_watch_view(request, video_id):
+    video=get_object_or_404(VideoFiles, id=video_id)
+    ip=request.META['REMOTE_ADDR']
+    if not ViewCount.objects.filter(video=video, session=request.session.session_key):
+        view=ViewCount(video=video, ip_address=ip, session=request.session.session_key)
+        view.save()
+    video_views=ViewCount.objects.filter(video=video).count
+    context={
+        "my_video": video,
+        "view_count": video_views
+    }
+    return render(request, 'watch.html', context)

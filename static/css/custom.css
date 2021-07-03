@@ -2,6 +2,28 @@ form{
     margin-bottom: 20px;
 }
 
+.tooltip {
+  position: relative;
+}
+
+.tooltip .tooltiptext {
+  display: block;
+  visibility: hidden;
+  white-space: nowrap;
+  clear: both;
+  text-align: center;
+  
+
+  /* Position the tooltip */
+  position: absolute;
+  bottom: 100%;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
 .upload-drop{
     height: 200px;
     border: 2px dashed #ccc;

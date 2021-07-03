@@ -1,7 +1,7 @@
 {%extends 'base.html'%}
 {%load static%}
 {%block content%}
-<main class="w-full relative top-20 mt-8">
+<main class="w-full relative top-24 mt-4 overflow-hidden">
   <div class="xl:w-292.5 lg:w-242.5 md:w-187.5 mx-auto px-4">
     {%block content_channel%}
     <div class="flex">
@@ -71,15 +71,16 @@
           <div>Videos</div>
           <div class="text-blue-400"><a href="#">View All...</a></div>
         </div>
-        {%if videos%}
-        {%for video in videos%}
-        <div class="bg-white px-4 py-2 grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-8 mb-8">
-          <div class="bg-white rounded overflow-hidden shadow-md">
-            <div class="relative">
-              <a href="#">
-                <img src="{{video.videodetail.thumbnail.url}}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+        <div class="bg-white px-4 py-2 grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-4 mb-8">
+          {%if videos%}
+          {%for video in videos%}
+          <div class="bg-white rounded shadow-md">
+            <div class="relative overflow-hidden">
+              <a href="{{video.get_absolute_url}}">
+                <img src="{{video.video_detail.thumbnail.url}}" alt="" class="w-full h-32 sm:h-48 object-cover" />
                 <div class="
-                    bg-red-200
+                    bg-black
+                    text-white
                     font-semibold
                     text-sm
                     rounded-lg
@@ -87,27 +88,36 @@
                     bottom-0
                     right-0
                     m-1
-                    p-1
+                    py-1
+                    px-2
                   ">
-                  <span>25 mins</span>
+                  {{video.video_detail.durations}}
                 </div>
               </a>
             </div>
-            <div class="p-2 flex-col justify-center">
-              <div class="font-semibold capitalize"><a href="#">{{video.videodetail.title}}</a></div>
-              <div class="flex justify-between">
-                <div class="text-gray-500 text-sm">100 views</div>
-                <div class="text-sm">13 days ago</div>
+            <div class="py-2 px-1 flex-col justify-center">
+              {% if video.video_detail.title|length > 50 %}
+              <div class="font-semibold capitalize tooltip hover:underline"><a
+                  href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:45}}</a><span
+                  class="tooltiptext text-sm bg-gray-500 text-white py-2 px-3 rounded">{{video.video_detail.title}}</span>
+              </div>
+              {%else%}
+              <div class="font-semibold capitalize hover:underline""><a href=" {{video.get_absolute_url}}">
+                {{video.video_detail.title}}</a></div>
+              {%endif%}
+              <div class="flex text-xs">
+                <div class="text-gray-500 flex-shrink-0">{{video.view_count.count}} views</div>
+                <div>&nbsp;&bull;&nbsp;</div>
+                <div class="flex-shrink-0">{{video.uploaded|timesince}} ago</div>
               </div>
             </div>
           </div>
+          {%endfor%}
+          {%else%}
+          <div class="p-2">Do not have any videos...</div>
+          {%endif%}
         </div>
-        {%endfor%}
-        {%else%}
-        <div class="bg-white px-4 py-2 grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-8 mb-8">
-          <p class="p-2">Do not have any videos...</p>
-        </div>
-        {%endif%}
+
         <div class="bg-primarybgu px-4 py-2 border-b border-gray-200 flex justify-between">
           <div>Playlist</div>
           <div class="text-blue-400"><a href="#">View All...</a></div>

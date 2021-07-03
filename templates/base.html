@@ -29,6 +29,7 @@
   {% endif %}
   {% if success_message %}
   <ul class="errorlist relative top-24 bg-green-300 p-2 font-semibold flex-col">
+    <!-- <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ messages }}</li> -->
     <li class="flex justify-center"><span>{{ success_message }}</span></li>
   </ul>
   {% endif %}
@@ -38,20 +39,21 @@
   </ul>
   {% endif %}
   {% block content %}
-  <main class="w-full h-full relative top-24 mt-8">
+  <main class="w-full relative top-24 mt-4 overflow-hidden">
     <div class="xl:w-292.5 lg:w-242.5 md:w-187.5 mx-auto px-4">
       <h4 class="font-bold pb-2 border-b border-gray-300">
         Recommend Videos
       </h4>
-      {%if videos%}
-      {%for video in videos%}
-      <div class="mt-4 grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 gap-10">
-        <div class="bg-white rounded overflow-hidden shadow-md">
-          <div class="relative">
-            <a href="#">
-              <img src="{{video.videodetail.thumbnail.url}}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+      <div class="mt-4 grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 gap-4">
+        {%if videos%}
+        {%for video in videos%}
+        <div class="bg-white rounded shadow-md">
+          <div class="relative overflow-hidden">
+            <a href="{{video.get_absolute_url}}">
+              <img src="{{video.video_detail.thumbnail.url}}" alt="" class="w-full h-32 sm:h-48 object-cover" />
               <div class="
-                    bg-red-200
+                    bg-black
+                    text-white
                     font-semibold
                     text-sm
                     rounded-lg
@@ -59,37 +61,40 @@
                     bottom-0
                     right-0
                     m-1
-                    p-1
+                    py-1
+                    px-2
                   ">
-                <span>25 mins</span>
+                {{video.video_detail.durations}}
               </div>
             </a>
           </div>
-          <div class="p-2 flex">
+          <div class="flex py-2 px-1 space-x-4">
             <div class="flex-shrink-0">
-              <div class="rounded-full overflow-hidden"><a href="#"><img
-                    src="{{video.channel.avatar.url}}" alt="" class="w-9 h-9 object-cover" /></a>
+              <div class="rounded-full overflow-hidden"><a href="{%url 'channel' video.channel.slug%}"><img src="{{video.channel.avatar.url}}" alt=""
+                    class="w-9 h-9 object-cover" /></a>
               </div>
             </div>
-            <div class="ml-4 w-full flex-col justify-center">
-              <div class="font-semibold capitalize"><a href="#">{{video.videodetail.title}}</a></div>
-              <div class="text-sm"><a href="#">{{video.channel.name}}</a></div>
-              <div class="flex">
-                <div class="text-gray-500 text-sm">100 views</div>
+            <div class="w-full flex-col justify-center">
+              {% if video.video_detail.title|length > 50 %}
+              <div class="font-semibold capitalize tooltip hover:underline"><a href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:45}}</a><span class="tooltiptext text-sm bg-gray-500 text-white py-2 px-3 rounded">{{video.video_detail.title}}</span></div>
+              {%else%}
+              <div class="font-semibold capitalize hover:underline""><a href="{{video.get_absolute_url}}">{{video.video_detail.title}}</a></div>
+              {%endif%}
+              <div class="text-sm hover:underline""><a href="{%url 'channel' video.channel.slug%}">{{video.channel.name}}</a></div>
+              <div class="flex text-xs">
+                <div class="text-gray-500 flex-shrink-0">{{video.view_count.count}} views</div>
                 <div>&nbsp;&bull;&nbsp;</div>
-                <div class="text-sm">13 days ago</div>
+                <div class="flex-shrink-0">{{video.uploaded|timesince}} ago</div>
               </div>
             </div>
           </div>
         </div>
+        {%endfor%}
+        {%else%}
+        <div class="p-2">Do not have any videos...</div>
+        {%endif%}
       </div>
-      {%endfor%}
-      {%else%}
-      <div class="mt-4 grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 gap-10">
-        <p class="p-2">Do not have any videos...</p>
-      </div>
-      {%endif%}
-
+      
       <h4 class="font-bold mt-8 pb-2 border-b border-gray-300">
         Hot Videos
       </h4>
@@ -251,7 +256,9 @@
       </div>
     </div>
   </main>
-  {% endblock content %} {% endblock body %} {% block extra_body %} {% endblock %}
+  {% endblock content %} {% endblock body %}
+  {% block extra_body %}
+  {% endblock %}
 </body>
 
 </html>
