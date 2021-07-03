@@ -8,6 +8,7 @@ from django.contrib.messages import get_messages
 from moviepy.editor import VideoFileClip
 from datetime import timedelta
 import math
+from django.urls import reverse
 
 # Create your views here.
 def home(request):
@@ -198,3 +199,47 @@ def video_watch_view(request, video_id):
         "view_count": video_views
     }
     return render(request, 'watch.html', context)
+
+@login_required
+def liked_video(request, id):
+    user=request.user
+    Like=False
+    if request.method=="POST":
+        video_id=request.POST['video_id']
+        get_video=get_object_or_404(VideoFiles, id=video_id)
+        if user in get_video.like.all():
+            get_video.like.remove(user)
+            Like=False
+        else:
+            get_video.dislike.remove(user)
+            get_video.like.add(user)
+            Like=True
+        data={
+            "liked":Like,
+            "like_count": get_video.like.all().count(),
+            "dislike_count": get_video.dislike.all().count()
+        }
+        return JsonResponse(data, safe=False)
+    return redirect(reverse("video_watch", args=[str(id)]))
+
+@login_required
+def disliked_video(request, id):
+    user=request.user
+    Dislike=False
+    if request.method=="POST":
+        video_id=request.POST['video_id']
+        get_video=get_object_or_404(VideoFiles, id=video_id)
+        if user in get_video.dislike.all():
+            get_video.dislike.remove(user)
+            Dislike=False
+        else:
+            get_video.like.remove(user)
+            get_video.dislike.add(user)
+            Dislike=True
+        data={
+            "disliked":Dislike,
+            "dislike_count": get_video.dislike.all().count(),
+            "like_count": get_video.like.all().count(),
+        }
+        return JsonResponse(data, safe=False)
+    return redirect(reverse("video_watch", args=[str(id)]))

@@ -59,12 +59,20 @@ class VideoFiles(models.Model):
     video = models.FileField(upload_to=channel_directory_path)
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
     uploaded = models.DateTimeField(auto_now_add=True)
-
+    like = models.ManyToManyField(User, related_name="video_loved")
+    dislike = models.ManyToManyField(User, related_name="video_disliked")
+   
     def __str__(self):
         return f"video_file_{self.id}"
 
     def get_absolute_url(self):
         return reverse('video_watch', args=[str(self.id)])
+
+    def num_like(self):
+        return self.like.count()
+
+    def num_dislike(self):
+        return self.dislike.count()
 
 
 class VideoDetail(models.Model):
