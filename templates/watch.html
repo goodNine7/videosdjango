@@ -11,7 +11,7 @@
                             <source src="{{my_video.video.url}}" type="video/mp4">
                         </video>
                     </div>
-                    <h2 class="font-semibold py-4 font-sans capitalize text-xl">{{my_video.videodetail.title}}</h2>
+                    <h2 class="font-semibold py-4 font-sans capitalize text-xl">{{my_video.video_detail.title}}</h2>
                     <div class="flex justify-between pb-3 border-b border-gray-400">
                         <div class="font-medium text-gray-700 text-lg">
                             <span class="leading-8">{{view_count}} views</span>
@@ -47,11 +47,13 @@
                     </div>
 
                     <div class="flex justify-between mt-4">
-                        <div class="flex space-x-2">
-                            <img src="{{my_video.channel.avatar}}" class="rounded-full h-12 w-12" alt="profile pic">
-                            <div>
-                                <h2>{{my_video.channel.name}}</h2>
-                                <h3>32.7k subcribers</h3>
+                        <div class="flex space-x-4">
+                            <div class="rounded-full overflow-hidden"><a
+                                    href="{%url 'channel' my_video.channel.slug%}"><img src="{{my_video.channel.avatar.url}}"
+                                        alt="" class="w-12 h-12 object-cover" /></a>
+                            </div>
+                            <div class="flex justify-center items-center">
+                                <div class="text-lg font-medium hover:underline""><a href="{%url 'channel' my_video.channel.slug%}">{{my_video.channel.name}}</a></div>
                             </div>
                         </div>
                         <div>
@@ -60,8 +62,8 @@
                         </div>
                     </div>
 
-                    <div class="py-3 pl-14 mt-2 pb-3 border-b border-gray-400">
-                        <p class="font-medium">{{my_video.videodetail.description}}</p>
+                    <div class="py-3 pl-16 mt-2 pb-3 border-b border-gray-400">
+                        <p class="font-medium">{{my_video.video_detail.description}}</p>
                     </div>
                     <div class="mt-4">
                         <div class="font-semibold capitalize text-2xl pb-2">59 comments</div>
@@ -92,7 +94,7 @@
                                     soluta repellat debitis ut perferendis?</p>
                                 <a href="#" class="text-lg capitalize py-2 text-blue-700">reply</a>
                             </div>
-                        </div>          
+                        </div>
                     </div>
                 </div>
                 <div class="w-1/3 p-4 h-screen min-h-full">
