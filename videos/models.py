@@ -49,9 +49,13 @@ class Channel(models.Model):
         upload_to=avatar_directory_path, default='default_avatar.jpg')
     slug = models.SlugField()
     description = models.TextField(blank=True)
+    subcribers=models.ManyToManyField(User, related_name='subcribers')
 
     def __str__(self):
         return self.name
+
+    def num_subcribers(self):
+        return self.subcribers.count()
 
 
 class VideoFiles(models.Model):

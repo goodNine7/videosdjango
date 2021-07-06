@@ -24,7 +24,8 @@ from videos.views import (home, channel,
                           video_info_process,
                           video_watch_view,
                           liked_video,
-                          disliked_video)
+                          disliked_video,
+                          subcriber_view)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,8 +38,8 @@ urlpatterns = [
     path('video_detail/', video_info_process, name="video_data"),
     path('watch/?v=<video_id>', video_watch_view, name="video_watch"),
     path('like/<id>', liked_video, name="like_video"),
-    path('dislike/<id>', disliked_video, name="dislike_video")
-
+    path('dislike/<id>', disliked_video, name="dislike_video"),
+    path('subcribe/', subcriber_view, name='subcriber')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,

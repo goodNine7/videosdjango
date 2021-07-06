@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import EditChannelForm
 from videos.models import Channel, VideoFiles, VideoDetail, Category, ViewCount
@@ -37,12 +38,12 @@ def home(request):
 def channel(request, slug):
     try:
         videos = VideoFiles.objects.all()
-        videos = videos.filter(channel__slug=slug)
         channel = Channel.objects.get(slug=slug)
         if request.user.id:
             current_user = request.user
             mychannel = Channel.objects.get(user=current_user.id)
             if slug == current_user.username:
+                videos = videos.filter(channel__slug=slug)
                 context = {
                     'channel': channel,
                     'mychannel': mychannel,
@@ -50,6 +51,7 @@ def channel(request, slug):
                     'videos': videos
                 }
             else:
+                videos = videos.filter(channel__slug=slug, video_detail__visibility=True)
                 context = {
                     'channel': channel,
                     'mychannel': '',
@@ -58,6 +60,7 @@ def channel(request, slug):
 
                 }
         else:
+            videos = videos.filter(channel__slug=slug, video_detail__visibility=True)
             context = {
                 'channel': channel,
                 'mychannel': '',
@@ -190,6 +193,8 @@ def video_info_process(request):
 def video_watch_view(request, video_id):
     video=get_object_or_404(VideoFiles, id=video_id)
     ip=request.META['REMOTE_ADDR']
+    if not request.session.exists(request.session.session_key):
+        request.session.create() 
     if not ViewCount.objects.filter(video=video, session=request.session.session_key):
         view=ViewCount(video=video, ip_address=ip, session=request.session.session_key)
         view.save()
@@ -243,3 +248,23 @@ def disliked_video(request, id):
         }
         return JsonResponse(data, safe=False)
     return redirect(reverse("video_watch", args=[str(id)]))
+
+def subcriber_view(request):
+    subcriber=request.user
+    Subcribed=False
+    if request.method=="POST":
+        channel_id=request.POST['channel_id']
+        channel=get_object_or_404(Channel, id=channel_id)
+        if subcriber in channel.subcribers.all():
+            channel.subcribers.remove(subcriber)
+            Subcribed=False
+        else:
+            channel.subcribers.add(subcriber)
+            Subcribed=True
+        data={
+            'Subcribed':Subcribed,
+            'subcriber':channel.num_subcribers()
+        }
+        return JsonResponse(data, safe=False)
+    return JsonResponse({'error': 'an error occured while processing request'})
+
