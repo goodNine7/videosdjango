@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import EditChannelForm
-from videos.models import Channel, VideoFiles, VideoDetail, Category, ViewCount
+from videos.models import Channel, Playlist, VideoFiles, VideoDetail, Category, ViewCount
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
@@ -199,9 +199,11 @@ def video_watch_view(request, video_id):
         view=ViewCount(video=video, ip_address=ip, session=request.session.session_key)
         view.save()
     video_views=ViewCount.objects.filter(video=video).count
+    playlist=get_object_or_404(Playlist, channel=Channel.objects.get(slug=request.user))
     context={
         "my_video": video,
-        "view_count": video_views
+        "view_count": video_views,
+        "playlist": playlist
     }
     return render(request, 'watch.html', context)
 
@@ -268,3 +270,27 @@ def subcriber_view(request):
         return JsonResponse(data, safe=False)
     return JsonResponse({'error': 'an error occured while processing request'})
 
+@login_required
+def addtoplaylist_view(request, id):
+    Added=False
+    if request.method=="POST":
+        channel=Channel.objects.get(slug=request.user)
+        video_id=request.POST['video_id']
+        videos=VideoFiles.objects.get(id=video_id)
+        try:
+            playlist=get_object_or_404(Playlist, channel=channel)
+        except:
+            Playlist.objects.create(name=request.user, channel=channel, visibility=True)
+            playlist=get_object_or_404(Playlist, channel=channel)
+        if videos in playlist.video.all():
+            playlist.video.remove(videos)
+            Added=False
+        else:
+            playlist.video.add(videos)
+            Added=True
+        data={
+            "added":Added,
+            "playlist":playlist.video.all().count()
+        }
+        return JsonResponse(data, safe=False)
+    return redirect(reverse("video_watch", args=[str(id)]))

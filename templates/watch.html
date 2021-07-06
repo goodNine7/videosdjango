@@ -59,14 +59,34 @@
                                 </button>
                                 <span id="dislike-count">{{my_video.num_dislike}}</span>
                             </form>
-                            <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block" fill="none"
-                                    viewBox="0 0 24 24" width="24" height="24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                                </svg>
-                                <span>Add to playlist</span>
-                            </div>
+                            <form action="{% url 'add_to_playlist' my_video.id %}" method="POST" class="playlist-form">
+                                {%csrf_token%}
+                                {% if my_video in playlist.video.all %}
+                                <button type="submit"
+                                    class="playlist-btn focus:outline-none bg-gray-300 p-2 rounded text-sm flex items-center space-x-1 text-red-500"
+                                    name="video_id" value="{{my_video.id}}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <span>Favorite</span>
+                                </button>
+                                {%else%}
+                                <button type="submit"
+                                    class="playlist-btn focus:outline-none bg-gray-300 p-2 rounded text-sm flex items-center space-x-1 text-black"
+                                    name="video_id" value="{{my_video.id}}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <span>Favorite</span>
+                                </button>
+                                {%endif%}
+                            </form>
                         </div>
                     </div>
 
@@ -86,19 +106,30 @@
                         </div>
                         {%if user == my_video.channel.user%}
                         <div><button type="submit" disabled name="channel_id" value="{{my_video.channel.id}}"
-                                class="hidden sub-btn px-8 py-3 bg-red-700 text-white font-medium text-l border border-gray-400 focus:outline-none">Subcribe</button>
+                                class="hidden sub-btn px-8 py-3 bg-red-700 text-white font-medium text-l border border-gray-400 focus:outline-none"><span
+                                    id="sub-text">Subcribe</span></button>
                         </div>
                         {%else%}
                         <form action="{%url 'subcriber'%}" method="POST" class="subcriber-form">
-                        {%csrf_token%}
-                        {%if user in my_video.channel.subcribers.all%}
-                        <button type="submit" id="sub-btn" name="channel_id" value="{{my_video.channel.id}}"
-                                class="sub-btn px-8 py-3 bg-gray-500 text-white font-medium text-l border border-gray-400 focus:outline-none">Subcribed</button>
-                        {%else%}
-                        <button type="submit" id="sub-btn" name="channel_id" value="{{my_video.channel.id}}"
-                        class="sub-btn px-8 py-3 bg-red-700 text-white font-medium text-l border border-gray-400 focus:outline-none">Subcribe</button>
-                        {%endif%}
-                         </form>
+                            {%csrf_token%}
+                            {%if user in my_video.channel.subcribers.all%}
+                            <button type="submit" id="sub-btn" name="channel_id" value="{{my_video.channel.id}}"
+                                class="sub-btn px-4 py-3 bg-gray-500 text-white font-medium text-l border border-gray-400 focus:outline-none flex items-center capitalize round">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="sub-icon h-6 w-6" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg><span id="sub-text">Subcribed</span></button>
+                            {%else%}
+                            <button type="submit" id="sub-btn" name="channel_id" value="{{my_video.channel.id}}"
+                                class="sub-btn px-4 py-3 bg-red-700 text-white font-medium text-l border border-gray-400 focus:outline-none capitalize round">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="sub-icon h-6 w-6" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg><span id="sub-text">Subcribe</span></button>
+                            {%endif%}
+                        </form>
                         {%endif%}
                     </div>
 

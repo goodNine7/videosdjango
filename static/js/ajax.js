@@ -71,7 +71,6 @@ $(document).ready(function(){
         const channel_id=$('.sub-btn').val()
         const token=$('input[name=csrfmiddlewaretoken]').val()
         const url=$(this).attr('action')
-
         $.ajax({
             method:"POST",
             url:url,
@@ -83,15 +82,46 @@ $(document).ready(function(){
                 if(response.Subcribed==true){
                     $('#sub-btn').removeClass('bg-red-700')
                     $('#sub-btn').addClass('bg-gray-500')
-                    $('#sub-btn').text('Subcribed')
+                    $('#sub-text').text('Subcribed')
+                    $('.sub-icon').removeClass('hidden')
                 }
                 else{
                     $('#sub-btn').addClass('bg-red-700')
                     $('#sub-btn').removeClass('bg-gray-500')
-                    $('#sub-btn').text('Subcribe')
+                    $('#sub-text').text('Subcribe')
+                    $('.sub-icon').addClass('hidden')
                 }
                 subcriber=$('#sub-count').text(response.subcriber + ' Subcribers')
                 parseInt(subcriber)
+            },
+            error:function(response){
+                console.log("Failed ", response)
+            }
+        })
+    });
+
+    $('.playlist-form').submit(function(e){
+        e.preventDefault()
+        const video_id=$('.playlist-btn').val()
+        const token=$('input[name=csrfmiddlewaretoken]').val()
+        const url=$(this).attr('action')
+
+        $.ajax({
+            method:"POST",
+            url:url,
+            headers:{'X-CSRFToken':token},
+            data:{
+                video_id:video_id
+            },
+            success:function(response){
+                if(response.added==true){
+                    $('.playlist-btn').addClass('text-red-500')
+                    $('.playlist-btn').removeClass('text-black')
+                }
+                else{
+                    $('.playlist-btn').addClass('text-black')
+                    $('.playlist-btn').removeClass('text-red-500')
+                }
             },
             error:function(response){
                 console.log("Failed ", response)

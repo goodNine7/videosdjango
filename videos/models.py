@@ -57,7 +57,6 @@ class Channel(models.Model):
     def num_subcribers(self):
         return self.subcribers.count()
 
-
 class VideoFiles(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     video = models.FileField(upload_to=channel_directory_path)
@@ -78,6 +77,15 @@ class VideoFiles(models.Model):
     def num_dislike(self):
         return self.dislike.count()
 
+class Playlist(models.Model):
+    name=models.CharField(max_length=100)
+    channel=models.ForeignKey(Channel, on_delete=models.CASCADE, related_name="channel_playlist")
+    video=models.ManyToManyField(VideoFiles, related_name="video_playlist")
+    visibility = models.BooleanField(choices=((False, "private"), (True, "public")))
+    create_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
 
 class VideoDetail(models.Model):
     videofile = models.OneToOneField(VideoFiles, on_delete=models.CASCADE, related_name="video_detail")
