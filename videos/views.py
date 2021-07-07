@@ -125,27 +125,22 @@ def channel_edit(request, slug):
     else:
         return redirect('index')
 
-
+@login_required(login_url='/account/login/')
 def upload_video(request):
     messages=''
     if(list(get_messages(request))):
         messages=list(get_messages(request))[0]
         if(str(messages) != "You have successfully uploaded a video"):
             messages=''
-    if request.user.id:
-        channel = Channel.objects.get(user=request.user.id)
-        context = {
-            'channel': channel,
-            'mychannel': channel,
-            'top_nav': channel,
-            'success_message': messages
-        }
-    else:
-        return redirect('/account/login')
+    channel = Channel.objects.get(user=request.user.id)
+    context = {
+        'channel': channel,
+        'mychannel': channel,
+        'top_nav': channel,
+        'success_message': messages
+    }
     return render(request, 'file_upload.html', context)
 
-
-@login_required
 def upload_processing(request):
     channel = Channel.objects.get(slug=request.user.username)
     # category = list(Category.objects.all())
@@ -199,7 +194,10 @@ def video_watch_view(request, video_id):
         view=ViewCount(video=video, ip_address=ip, session=request.session.session_key)
         view.save()
     video_views=ViewCount.objects.filter(video=video).count
-    playlist=get_object_or_404(Playlist, channel=Channel.objects.get(slug=request.user))
+    try:
+        playlist=get_object_or_404(Playlist, channel=Channel.objects.get(slug=request.user))
+    except:
+        playlist=''
     context={
         "my_video": video,
         "view_count": video_views,
@@ -207,10 +205,18 @@ def video_watch_view(request, video_id):
     }
     return render(request, 'watch.html', context)
 
-@login_required
+
 def liked_video(request, id):
     user=request.user
     Like=False
+    if not request.user.is_authenticated:
+        current_url=request.get_full_path()
+        login_url=reverse("account_login")
+        login_required="{}?next={}".format(login_url, current_url)
+        data={
+            'login_required':login_required
+        }
+        return JsonResponse(data, safe=False)
     if request.method=="POST":
         video_id=request.POST['video_id']
         get_video=get_object_or_404(VideoFiles, id=video_id)
@@ -224,15 +230,23 @@ def liked_video(request, id):
         data={
             "liked":Like,
             "like_count": get_video.like.all().count(),
-            "dislike_count": get_video.dislike.all().count()
+            "dislike_count": get_video.dislike.all().count(),
         }
         return JsonResponse(data, safe=False)
     return redirect(reverse("video_watch", args=[str(id)]))
 
-@login_required
+
 def disliked_video(request, id):
     user=request.user
     Dislike=False
+    if not request.user.is_authenticated:
+        current_url=request.get_full_path()
+        login_url=reverse("account_login")
+        login_required="{}?next={}".format(login_url, current_url)
+        data={
+            'login_required':login_required
+        }
+        return JsonResponse(data, safe=False)
     if request.method=="POST":
         video_id=request.POST['video_id']
         get_video=get_object_or_404(VideoFiles, id=video_id)
@@ -251,9 +265,17 @@ def disliked_video(request, id):
         return JsonResponse(data, safe=False)
     return redirect(reverse("video_watch", args=[str(id)]))
 
-def subcriber_view(request):
+def subcriber_view(request, id):
     subcriber=request.user
     Subcribed=False
+    if not request.user.is_authenticated:
+        current_url=request.get_full_path()
+        login_url=reverse("account_login")
+        login_required="{}?next={}".format(login_url, current_url)
+        data={
+            'login_required':login_required
+        }
+        return JsonResponse(data, safe=False)
     if request.method=="POST":
         channel_id=request.POST['channel_id']
         channel=get_object_or_404(Channel, id=channel_id)
@@ -268,11 +290,18 @@ def subcriber_view(request):
             'subcriber':channel.num_subcribers()
         }
         return JsonResponse(data, safe=False)
-    return JsonResponse({'error': 'an error occured while processing request'})
+    return redirect(reverse("video_watch", args=[str(id)]))
 
-@login_required
 def addtoplaylist_view(request, id):
     Added=False
+    if not request.user.is_authenticated:
+        current_url=request.get_full_path()
+        login_url=reverse("account_login")
+        login_required="{}?next={}".format(login_url, current_url)
+        data={
+            'login_required':login_required
+        }
+        return JsonResponse(data, safe=False)
     if request.method=="POST":
         channel=Channel.objects.get(slug=request.user)
         video_id=request.POST['video_id']

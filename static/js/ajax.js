@@ -14,18 +14,23 @@ $(document).ready(function(){
                 'video_id':video_id
             },
             success:function(response){
-                if(response.liked==true){
-                    $('#like-icon').addClass("text-blue-700")
-                    $('#dislike-icon').removeClass("text-blue-700")
+                if(response.login_required){
+                    window.location.href=response.login_required
                 }
                 else{
-                    $('#like-icon').removeClass("text-blue-700")
+                    if(response.liked==true){
+                        $('#like-icon').addClass("text-blue-700")
+                        $('#dislike-icon').removeClass("text-blue-700")
+                    }
+                    else{
+                        $('#like-icon').removeClass("text-blue-700")
+                    }
+    
+                    like=$('#like-count').text(response.like_count)
+                    parseInt(like)
+                    dislike=$('#dislike-count').text(response.dislike_count)
+                    parseInt(dislike)
                 }
-
-                like=$('#like-count').text(response.like_count)
-                parseInt(like)
-                dislike=$('#dislike-count').text(response.dislike_count)
-                parseInt(dislike)
             },
             error:function(response){
                 console.log("Failed ", response)
@@ -47,18 +52,23 @@ $(document).ready(function(){
                 'video_id':video_id
             },
             success:function(response){
-                if(response.disliked==true){
-                    $('#dislike-icon').addClass("text-blue-700")
-                    $('#like-icon').removeClass("text-blue-700")
+                if(response.login_required){
+                    window.location.href=response.login_required
                 }
                 else{
-                    $('#dislike-icon').removeClass("text-blue-700")
-                }
-
-                dislike=$('#dislike-count').text(response.dislike_count)
-                parseInt(dislike)
-                like=$('#like-count').text(response.like_count)
-                parseInt(like)
+                    if(response.disliked==true){
+                        $('#dislike-icon').addClass("text-blue-700")
+                        $('#like-icon').removeClass("text-blue-700")
+                    }
+                    else{
+                        $('#dislike-icon').removeClass("text-blue-700")
+                    }
+    
+                    dislike=$('#dislike-count').text(response.dislike_count)
+                    parseInt(dislike)
+                    like=$('#like-count').text(response.like_count)
+                    parseInt(like)
+                } 
             },
             error:function(response){
                 console.log("Failed ", response)
@@ -79,20 +89,25 @@ $(document).ready(function(){
                 channel_id:channel_id
             },
             success:function(response){
-                if(response.Subcribed==true){
-                    $('#sub-btn').removeClass('bg-red-700')
-                    $('#sub-btn').addClass('bg-gray-500')
-                    $('#sub-text').text('Subcribed')
-                    $('.sub-icon').removeClass('hidden')
+                if(response.login_required){
+                    window.location.href=response.login_required
                 }
                 else{
-                    $('#sub-btn').addClass('bg-red-700')
-                    $('#sub-btn').removeClass('bg-gray-500')
-                    $('#sub-text').text('Subcribe')
-                    $('.sub-icon').addClass('hidden')
+                    if(response.Subcribed==true){
+                        $('#sub-btn').removeClass('bg-red-700')
+                        $('#sub-btn').addClass('bg-gray-500')
+                        $('#sub-text').text('Subcribed')
+                        $('.sub-icon').removeClass('hidden')
+                    }
+                    else{
+                        $('#sub-btn').addClass('bg-red-700')
+                        $('#sub-btn').removeClass('bg-gray-500')
+                        $('#sub-text').text('Subcribe')
+                        $('.sub-icon').addClass('hidden')
+                    }
+                    subcriber=$('#sub-count').text(response.subcriber + ' Subcribers')
+                    parseInt(subcriber)
                 }
-                subcriber=$('#sub-count').text(response.subcriber + ' Subcribers')
-                parseInt(subcriber)
             },
             error:function(response){
                 console.log("Failed ", response)
@@ -114,13 +129,18 @@ $(document).ready(function(){
                 video_id:video_id
             },
             success:function(response){
-                if(response.added==true){
-                    $('.playlist-btn').addClass('text-red-500')
-                    $('.playlist-btn').removeClass('text-black')
+                if(response.login_required){
+                    window.location.href=response.login_required
                 }
                 else{
-                    $('.playlist-btn').addClass('text-black')
-                    $('.playlist-btn').removeClass('text-red-500')
+                    if(response.added==true){
+                        $('.playlist-btn').addClass('text-red-500')
+                        $('.playlist-btn').removeClass('text-black')
+                    }
+                    else{
+                        $('.playlist-btn').addClass('text-black')
+                        $('.playlist-btn').removeClass('text-red-500')
+                    }
                 }
             },
             error:function(response){

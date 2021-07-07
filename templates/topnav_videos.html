@@ -32,14 +32,14 @@
       {% endif %}
 
       <li class="px-2">
-        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_logout'%}"">Logout</a>
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_logout'%}?next={{request.get_full_path|urlencode}}"">Logout</a>
       </li>
       {% else %}
       <li>
-        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_login' %}">Login</a>
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_login' %}?next={{request.get_full_path|urlencode}}">Login</a>
       </li>
       <li>
-        <a class="ml-4 cursor-pointer flex-shrink-0" href="{% url 'account_signup' %}">Sign Up</a>
+        <a class="ml-4 cursor-pointer flex-shrink-0" href="{% url 'account_signup' %}?next={{request.get_full_path|urlencode}}">Sign Up</a>
       </li>
       {% endif %}
     </ul>

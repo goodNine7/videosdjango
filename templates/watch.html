@@ -110,11 +110,11 @@
                                     id="sub-text">Subcribe</span></button>
                         </div>
                         {%else%}
-                        <form action="{%url 'subcriber'%}" method="POST" class="subcriber-form">
+                        <form action="{%url 'subcriber' my_video.id%}" method="POST" class="subcriber-form">
                             {%csrf_token%}
                             {%if user in my_video.channel.subcribers.all%}
                             <button type="submit" id="sub-btn" name="channel_id" value="{{my_video.channel.id}}"
-                                class="sub-btn px-4 py-3 bg-gray-500 text-white font-medium text-l border border-gray-400 focus:outline-none flex items-center capitalize round">
+                                class="sub-btn px-4 py-3 bg-gray-500 text-white font-medium text-l border border-gray-500 focus:outline-none flex items-center capitalize round">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="sub-icon h-6 w-6" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -122,8 +122,8 @@
                                 </svg><span id="sub-text">Subcribed</span></button>
                             {%else%}
                             <button type="submit" id="sub-btn" name="channel_id" value="{{my_video.channel.id}}"
-                                class="sub-btn px-4 py-3 bg-red-700 text-white font-medium text-l border border-gray-400 focus:outline-none capitalize round">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="sub-icon h-6 w-6" fill="none"
+                                class="sub-btn px-4 py-3 bg-red-700 text-white font-medium text-l border border-gray-500 focus:outline-none flex items-center capitalize round">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="hidden sub-icon h-6 w-6" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />

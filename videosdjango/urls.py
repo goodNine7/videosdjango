@@ -30,7 +30,7 @@ from videos.views import (home, channel,
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('account/', include('allauth.urls')),
+    path(r'account/', include('allauth.urls')),
     path('', home, name="index"),
     path('channel/<slug>/', channel, name="channel"),
     path('channel/<slug>/edit', channel_edit, name="channel_edit"),
@@ -38,9 +38,9 @@ urlpatterns = [
     path('uploading/', upload_processing, name="processing"),
     path('video_detail/', video_info_process, name="video_data"),
     path('watch/?v=<video_id>', video_watch_view, name="video_watch"),
-    path('like/<id>', liked_video, name="like_video"),
+    path('like/<uuid:id>', liked_video, name="like_video"),
     path('dislike/<id>', disliked_video, name="dislike_video"),
-    path('subcribe/', subcriber_view, name='subcriber'),
+    path('subcribe/<id>', subcriber_view, name='subcriber'),
     path('add_to_playlist/<id>', addtoplaylist_view, name='add_to_playlist')
 ]
 if settings.DEBUG:
