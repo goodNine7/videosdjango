@@ -34,7 +34,6 @@ def home(request):
         }
     return render(request, 'base.html', context)
 
-
 def channel(request, slug):
     try:
         videos = VideoFiles.objects.all()
