@@ -48,7 +48,7 @@
         {%if videos%}
         {%for video in videos%}
         <div class="bg-white rounded shadow-md">
-          <div class="relative overflow-hidden">
+          <div class="relative rounded-t overflow-hidden">
             <a href="{{video.get_absolute_url}}">
               <img src="{{video.video_detail.thumbnail.url}}" alt="" class="w-full h-32 sm:h-48 object-cover" />
               <div class="
@@ -76,7 +76,7 @@
             </div>
             <div class="w-full flex-col justify-center">
               {% if video.video_detail.title|length > 50 %}
-              <div class="font-semibold capitalize tooltip hover:underline"><a href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:45}}</a><span class="tooltiptext text-sm bg-gray-500 text-white py-2 px-3 rounded">{{video.video_detail.title}}</span></div>
+              <div class="font-semibold capitalize tooltip hover:underline"><a href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:45}}</a><p class="tooltiptext text-sm bg-gray-700 text-white py-2 px-3 rounded-lg">{{video.video_detail.title}}</p></div>
               {%else%}
               <div class="font-semibold capitalize hover:underline""><a href="{{video.get_absolute_url}}">{{video.video_detail.title}}</a></div>
               {%endif%}

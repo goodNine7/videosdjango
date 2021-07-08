@@ -9,19 +9,29 @@ form{
 .tooltip .tooltiptext {
   display: block;
   visibility: hidden;
-  white-space: nowrap;
-  clear: both;
-  text-align: center;
-  
-
-  /* Position the tooltip */
+  /* white-space: nowrap; */
+  /* clear: both; */
+  text-align: justify;
+  pointer-events: none;
   position: absolute;
   bottom: 100%;
   z-index: 1;
+  opacity:0;
+  transition:1s opacity;
+
+  /* position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  left:100%;
+  margin-left:10px;
+  width:200px; */
+  /* text-align:center; */
 }
+
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
+  opacity:1;
 }
 
 .upload-drop{
