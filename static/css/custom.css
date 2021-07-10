@@ -73,3 +73,9 @@ form{
     min-height: 150px;
     margin: 20px;
 }
+
+.love-bar{
+  display: block;
+  width: 0%;
+  transition: 1s ease;
+}

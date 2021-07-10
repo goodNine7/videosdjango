@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 import os
 from django.shortcuts import reverse
+import math
 
 
 def remove_duplicate_path(fullname):
@@ -76,6 +77,13 @@ class VideoFiles(models.Model):
 
     def num_dislike(self):
         return self.dislike.count()
+
+    def favorite_percent(self):
+        try:
+            favorite=math.floor((float(100)/(self.like.count()+self.dislike.count()))*self.like.count())
+        except:
+            favorite="0"
+        return favorite
 
 class Playlist(models.Model):
     name=models.CharField(max_length=100)

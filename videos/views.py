@@ -71,7 +71,6 @@ def channel(request, slug):
     except:
         return redirect('index')
 
-
 def channel_edit(request, slug):
     if request.user.username == slug:
         mychannel = Channel.objects.get(slug=slug)
@@ -164,7 +163,6 @@ def upload_processing(request):
     else:
         return redirect('index')
 
-
 def video_info_process(request):
     if request.method == "POST":
         file_id = request.POST['videofile']
@@ -182,7 +180,6 @@ def video_info_process(request):
         messages.success(request, "You have successfully uploaded a video")
         return redirect('upload_video')
     return redirect('upload_video')
-
 
 def video_watch_view(request, video_id):
     video=get_object_or_404(VideoFiles, id=video_id)
@@ -203,7 +200,6 @@ def video_watch_view(request, video_id):
         "playlist": playlist
     }
     return render(request, 'watch.html', context)
-
 
 def liked_video(request, id):
     user=request.user
@@ -233,7 +229,6 @@ def liked_video(request, id):
         }
         return JsonResponse(data, safe=False)
     return redirect(reverse("video_watch", args=[str(id)]))
-
 
 def disliked_video(request, id):
     user=request.user

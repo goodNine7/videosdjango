@@ -30,6 +30,16 @@ $(document).ready(function(){
                     parseInt(like)
                     dislike=$('#dislike-count').text(response.dislike_count)
                     parseInt(dislike)
+                    favorite=Math.round(100/(response.like_count+response.dislike_count))*response.like_count
+                    if(isNaN(favorite)){
+                        favorite=parseInt(0)
+                        $('.love-text').text("0%")
+                    }
+                    else{
+                        favorite=parseInt(favorite)
+                        $('.love-text').text(favorite + "%")
+                    }
+                    document.getElementById('love-bar').style.width=favorite + "%"
                 }
             },
             error:function(response){
@@ -68,6 +78,16 @@ $(document).ready(function(){
                     parseInt(dislike)
                     like=$('#like-count').text(response.like_count)
                     parseInt(like)
+                    favorite=Math.round(100/(response.like_count+response.dislike_count))*response.like_count
+                    if(isNaN(favorite)){
+                        favorite=parseInt(0)
+                        $('.love-text').text("0%")
+                    }
+                    else{
+                        favorite=parseInt(favorite)
+                        $('.love-text').text(favorite + "%")
+                    }
+                    document.getElementById('love-bar').style.width=favorite + "%"
                 } 
             },
             error:function(response){
@@ -136,10 +156,14 @@ $(document).ready(function(){
                     if(response.added==true){
                         $('.playlist-btn').addClass('text-red-500')
                         $('.playlist-btn').removeClass('text-black')
+                        $('.playlist-icon').removeClass('hidden')
+                        $('.playlist-text').text('Playlist')
                     }
                     else{
                         $('.playlist-btn').addClass('text-black')
+                        $('.playlist-icon').addClass('hidden')
                         $('.playlist-btn').removeClass('text-red-500')
+                        $('.playlist-text').text('Add to Playlist')
                     }
                 }
             },
