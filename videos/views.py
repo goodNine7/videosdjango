@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import EditChannelForm
-from videos.models import Channel, Playlist, VideoFiles, VideoDetail, Category, ViewCount
+from videos.models import Channel, Playlist, VideoComment, VideoFiles, VideoDetail, Category, ViewCount
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
@@ -123,7 +123,7 @@ def channel_edit(request, slug):
     else:
         return redirect('index')
 
-@login_required(login_url='/account/login/')
+@login_required
 def upload_video(request):
     messages=''
     if(list(get_messages(request))):
@@ -183,6 +183,8 @@ def video_info_process(request):
 
 def video_watch_view(request, video_id):
     video=get_object_or_404(VideoFiles, id=video_id)
+    video_cat=video.video_detail.category.name
+    suggested_video=VideoFiles.objects.filter(video_detail__category__name=video_cat).exclude(id=video_id)
     ip=request.META['REMOTE_ADDR']
     if not request.session.exists(request.session.session_key):
         request.session.create() 
@@ -197,7 +199,8 @@ def video_watch_view(request, video_id):
     context={
         "my_video": video,
         "view_count": video_views,
-        "playlist": playlist
+        "playlist": playlist,
+        "recommend_videos":suggested_video
     }
     return render(request, 'watch.html', context)
 
@@ -314,6 +317,36 @@ def addtoplaylist_view(request, id):
         data={
             "added":Added,
             "playlist":playlist.video.all().count()
+        }
+        return JsonResponse(data, safe=False)
+    return redirect(reverse("video_watch", args=[str(id)]))
+
+@login_required
+def video_comment(request, id):
+    if not request.user.is_authenticated:
+        current_url=request.get_full_path()
+        login_url=reverse("account_login")
+        login_required="{}?next={}".format(login_url, current_url)
+        data={
+            'login_required':login_required
+        }
+        return JsonResponse(data, safe=False)
+    if request.method=="POST":
+        comment=request.POST['comment']
+        video_id=request.POST['video_id']
+        video=VideoFiles.objects.get(id=video_id)
+        if comment is not None:
+            create_comment=VideoComment(video=video, channel=Channel.objects.get(slug=request.user), comment=comment)
+            create_comment.save()
+        channel_name=Channel.objects.get(slug=request.user)
+        print(channel_name)
+        channel_avatar=channel_name.avatar.url
+        print(channel_avatar)
+        data={
+            "total_cmt": video.video_comment.all().count(),
+            "channel_name": str(channel_name),
+            "channel_avatar": str(channel_avatar),
+            "channel_slug":str(request.user)
         }
         return JsonResponse(data, safe=False)
     return redirect(reverse("video_watch", args=[str(id)]))

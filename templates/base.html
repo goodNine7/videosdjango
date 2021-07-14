@@ -50,7 +50,7 @@
         <div class="bg-white rounded shadow-md">
           <div class="relative rounded-t overflow-hidden">
             <a href="{{video.get_absolute_url}}">
-              <img src="{{video.video_detail.thumbnail.url}}" alt="" class="w-full h-32 sm:h-48 object-cover" />
+              <img src="{{video.video_detail.thumbnail.url}}" alt="" class="w-full h-48 object-cover" />
               <div class="
                     bg-black
                     text-white
@@ -80,7 +80,7 @@
               {%else%}
               <div class="font-semibold capitalize hover:underline""><a href="{{video.get_absolute_url}}">{{video.video_detail.title}}</a></div>
               {%endif%}
-              <div class="text-sm hover:underline""><a href="{%url 'channel' video.channel.slug%}">{{video.channel.name}}</a></div>
+              <div class="text-sm hover:underline"><a href="{%url 'channel' video.channel.slug%}">{{video.channel.name}}</a></div>
               <div class="flex text-xs">
                 <div class="text-gray-500 flex-shrink-0">{{video.view_count.count}} views</div>
                 <div>&nbsp;&bull;&nbsp;</div>

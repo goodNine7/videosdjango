@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.conf import settings
 import os
+from django.db.models.deletion import CASCADE
 from django.shortcuts import reverse
 import math
 
@@ -115,3 +116,12 @@ class ViewCount(models.Model):
 
     def __str__(self):
         return self.ip_address
+
+class VideoComment(models.Model):
+    video=models.ForeignKey(VideoFiles, on_delete=models.CASCADE, related_name='video_comment')
+    channel=models.ForeignKey(Channel, on_delete=models.CASCADE, related_name="channel_comment")
+    comment=models.TextField()
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.channel.name} comment"

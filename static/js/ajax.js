@@ -1,4 +1,12 @@
 $(document).ready(function(){
+    
+    String.prototype.format = function() {
+        var formatted = this;
+        for( var arg in arguments ) {
+            formatted = formatted.replace("{" + arg + "}", arguments[arg]);
+        }
+        return formatted;
+    };
 
     $('.like-form').submit(function(e){
         e.preventDefault();
@@ -169,6 +177,39 @@ $(document).ready(function(){
             },
             error:function(response){
                 console.log("Failed ", response)
+            }
+        })
+    })
+
+    $('.cmt-form').submit(function(e){
+        e.preventDefault()
+        const video_id=$('#cmt-btn').val()
+        const comment=$('#comment').val()
+        const token=$('input[name=csrfmiddlewaretoken]').val()
+        const url=$(this).attr('action')
+
+        $.ajax({
+            method:"POST",
+            url:url,
+            headers:{'X-CSRFToken':token},
+            data:{
+                video_id:video_id,
+                comment:comment
+            },
+            success:function(response){
+                console.log(response)
+                $('#total-cmt').text(response.total_cmt + ' comments')
+                $('#comment').val('')
+                let cmt_content=document.getElementById('comment-content')
+                let current_content=cmt_content.innerHTML
+                let new_content='<div class="flex space-x-4 mb-8"><div class="rounded-full overflow-hidden flex-shrink-0"><a href="/channel/{0}/"><img src="{1}" alt="" class="w-12 h-12 object-cover"></a></div><div class="break-all"><div class="flex space-x-2 items-center"><h2 class="capitalize font-semibold text-xl">{2}</h2><span>0&nbsp;minutes ago</span></div><span class="py-1">{3}</span></div></div>'.format(response.channel_slug, response.channel_avatar, response.channel_name, comment)
+                console.log(current_content)
+                console.log(new_content)
+                cmt_content.innerHTML=new_content+current_content
+                
+            },
+            error:function(response){
+                console.log('Failed ', response)
             }
         })
     })

@@ -26,11 +26,13 @@ from videos.views import (home, channel,
                           liked_video,
                           disliked_video,
                           subcriber_view,
-                          addtoplaylist_view)
+                          addtoplaylist_view,
+                          video_comment
+                          )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(r'account/', include('allauth.urls')),
+    path('accounts/', include('allauth.urls')),
     path('', home, name="index"),
     path('channel/<slug>/', channel, name="channel"),
     path('channel/<slug>/edit', channel_edit, name="channel_edit"),
@@ -41,7 +43,8 @@ urlpatterns = [
     path('like/<uuid:id>', liked_video, name="like_video"),
     path('dislike/<id>', disliked_video, name="dislike_video"),
     path('subcribe/<id>', subcriber_view, name='subcriber'),
-    path('add_to_playlist/<id>', addtoplaylist_view, name='add_to_playlist')
+    path('add_to_playlist/<id>', addtoplaylist_view, name='add_to_playlist'),
+    path('comment/<id>', video_comment, name='comment')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,
