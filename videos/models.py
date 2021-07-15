@@ -7,10 +7,14 @@ from django.shortcuts import reverse
 import math
 
 
+
 def remove_duplicate_path(fullname):
     fullpathname = os.path.join(settings.MEDIA_ROOT, fullname)
     if os.path.exists(fullpathname):
-        os.remove(fullpathname)
+        try:
+            os.remove(fullpathname)
+        except:
+            next
 
 
 def channel_directory_path(instance, filename):

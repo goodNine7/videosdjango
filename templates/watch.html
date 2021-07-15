@@ -179,7 +179,7 @@
                         <form action="{% url 'comment' my_video.id %}" method="POST" class="cmt-form">
                             {%csrf_token%}
                             <div class="py-2">
-                                <textarea name="comment" rows="1" id="comment"
+                                <textarea name="comment" rows="1" id="comment" required
                                     class="w-full outline-none tracking-wider p-6 border-b border-gray-700"
                                     placeholder="Add a comment .."></textarea>
                                 <div class="flex justify-end py-2">

@@ -197,16 +197,17 @@ $(document).ready(function(){
                 comment:comment
             },
             success:function(response){
-                console.log(response)
-                $('#total-cmt').text(response.total_cmt + ' comments')
-                $('#comment').val('')
-                let cmt_content=document.getElementById('comment-content')
-                let current_content=cmt_content.innerHTML
-                let new_content='<div class="flex space-x-4 mb-8"><div class="rounded-full overflow-hidden flex-shrink-0"><a href="/channel/{0}/"><img src="{1}" alt="" class="w-12 h-12 object-cover"></a></div><div class="break-all"><div class="flex space-x-2 items-center"><h2 class="capitalize font-semibold text-xl">{2}</h2><span>0&nbsp;minutes ago</span></div><span class="py-1">{3}</span></div></div>'.format(response.channel_slug, response.channel_avatar, response.channel_name, comment)
-                console.log(current_content)
-                console.log(new_content)
-                cmt_content.innerHTML=new_content+current_content
-                
+                if(response.login_required){
+                    window.location.href=response.login_required
+                }
+                else{
+                    $('#total-cmt').text(response.total_cmt + ' comments')
+                    $('#comment').val('')
+                    let cmt_content=document.getElementById('comment-content')
+                    let current_content=cmt_content.innerHTML
+                    let new_content='<div class="flex space-x-4 mb-8"><div class="rounded-full overflow-hidden flex-shrink-0"><a href="/channel/{0}/"><img src="{1}" alt="" class="w-12 h-12 object-cover"></a></div><div class="break-all"><div class="flex space-x-2 items-center"><h2 class="capitalize font-semibold text-xl">{2}</h2><span>0&nbsp;minutes ago</span></div><span class="py-1">{3}</span></div></div>'.format(response.channel_slug, response.channel_avatar, response.channel_name, comment)
+                    cmt_content.innerHTML=new_content+current_content
+                }
             },
             error:function(response){
                 console.log('Failed ', response)

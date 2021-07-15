@@ -321,7 +321,6 @@ def addtoplaylist_view(request, id):
         return JsonResponse(data, safe=False)
     return redirect(reverse("video_watch", args=[str(id)]))
 
-@login_required
 def video_comment(request, id):
     if not request.user.is_authenticated:
         current_url=request.get_full_path()
@@ -339,9 +338,7 @@ def video_comment(request, id):
             create_comment=VideoComment(video=video, channel=Channel.objects.get(slug=request.user), comment=comment)
             create_comment.save()
         channel_name=Channel.objects.get(slug=request.user)
-        print(channel_name)
         channel_avatar=channel_name.avatar.url
-        print(channel_avatar)
         data={
             "total_cmt": video.video_comment.all().count(),
             "channel_name": str(channel_name),
