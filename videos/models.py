@@ -128,4 +128,4 @@ class VideoComment(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.channel.name} comment"
+        return f"{self.channel.name}: {self.comment[:(int(len(self.comment)/int(2)))]}"

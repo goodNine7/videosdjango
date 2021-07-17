@@ -26,11 +26,14 @@ def home(request):
         context = {
             'channel': channel,
             'top_nav': channel,
-            'videos': allvideos
+            'videos': allvideos,
+            'categories': Category.objects.all()
         }
     except:
         context = {
-            'videos': allvideos
+            'videos': allvideos,
+            'categories': Category.objects.all()
+
         }
     return render(request, 'base.html', context)
 
@@ -47,7 +50,8 @@ def channel(request, slug):
                     'channel': channel,
                     'mychannel': mychannel,
                     'top_nav': mychannel,
-                    'videos': videos
+                    'videos': videos,
+                    'categories': Category.objects.all()
                 }
             else:
                 videos = videos.filter(channel__slug=slug, video_detail__visibility=True)
@@ -55,8 +59,8 @@ def channel(request, slug):
                     'channel': channel,
                     'mychannel': '',
                     'top_nav': mychannel,
-                    'videos': videos
-
+                    'videos': videos,
+                    'categories': Category.objects.all()
                 }
         else:
             videos = videos.filter(channel__slug=slug, video_detail__visibility=True)
@@ -64,8 +68,8 @@ def channel(request, slug):
                 'channel': channel,
                 'mychannel': '',
                 'top_nav': '',
-                'videos': videos
-
+                'videos': videos,
+                'categories': Category.objects.all()
             }
         return render(request, 'channel.html', context)
     except:
@@ -86,7 +90,8 @@ def channel_edit(request, slug):
                         'success_message': 'The information was updated successfully.',
                         'channel': mychannel,
                         'mychannel': mychannel,
-                        'top_nav': mychannel
+                        'top_nav': mychannel,
+                        'categories': Category.objects.all()
                     }
                     # return render('channel', slug=request.user)
                 else:
@@ -94,8 +99,8 @@ def channel_edit(request, slug):
                         'error_message': 'Channel "{0}" already exists !'.format(new_name),
                         'channel': mychannel,
                         'mychannel': mychannel,
-                        'top_nav': mychannel
-
+                        'top_nav': mychannel,
+                        'categories': Category.objects.all()
                     }
             else:
                 form = EditChannelForm(
@@ -106,8 +111,8 @@ def channel_edit(request, slug):
                     'success_message': 'The information was updated successfully.',
                     'channel': mychannel,
                     'mychannel': mychannel,
-                    'top_nav': mychannel
-
+                    'top_nav': mychannel,
+                    'categories': Category.objects.all()
                 }
                 # return redirect('channel', slug=request.user)
         else:
@@ -116,8 +121,8 @@ def channel_edit(request, slug):
                 'edit_form': form,
                 'channel': mychannel,
                 'mychannel': mychannel,
-                'top_nav': mychannel
-
+                'top_nav': mychannel,
+                'categories': Category.objects.all()
             }
         return render(request, 'channel_edit.html', context)
     else:
@@ -135,7 +140,8 @@ def upload_video(request):
         'channel': channel,
         'mychannel': channel,
         'top_nav': channel,
-        'success_message': messages
+        'success_message': messages,
+        'categories': Category.objects.all()
     }
     return render(request, 'file_upload.html', context)
 
@@ -182,27 +188,31 @@ def video_info_process(request):
     return redirect('upload_video')
 
 def video_watch_view(request, video_id):
-    video=get_object_or_404(VideoFiles, id=video_id)
-    video_cat=video.video_detail.category.name
-    suggested_video=VideoFiles.objects.filter(video_detail__category__name=video_cat).exclude(id=video_id)
-    ip=request.META['REMOTE_ADDR']
-    if not request.session.exists(request.session.session_key):
-        request.session.create() 
-    if not ViewCount.objects.filter(video=video, session=request.session.session_key):
-        view=ViewCount(video=video, ip_address=ip, session=request.session.session_key)
-        view.save()
-    video_views=ViewCount.objects.filter(video=video).count
     try:
-        playlist=get_object_or_404(Playlist, channel=Channel.objects.get(slug=request.user))
+        video=get_object_or_404(VideoFiles, id=video_id)
+        video_cat=video.video_detail.category.name
+        suggested_video=VideoFiles.objects.filter(video_detail__category__name=video_cat).exclude(id=video_id)
+        ip=request.META['REMOTE_ADDR']
+        if not request.session.exists(request.session.session_key):
+            request.session.create() 
+        if not ViewCount.objects.filter(video=video, session=request.session.session_key):
+            view=ViewCount(video=video, ip_address=ip, session=request.session.session_key)
+            view.save()
+        video_views=ViewCount.objects.filter(video=video).count
+        try:
+            playlist=get_object_or_404(Playlist, channel=Channel.objects.get(slug=request.user))
+        except:
+            playlist=''
+        context={
+            "my_video": video,
+            "view_count": video_views,
+            "playlist": playlist,
+            "recommend_videos":suggested_video,
+            'categories': Category.objects.all()
+        }
+        return render(request, 'watch.html', context)
     except:
-        playlist=''
-    context={
-        "my_video": video,
-        "view_count": video_views,
-        "playlist": playlist,
-        "recommend_videos":suggested_video
-    }
-    return render(request, 'watch.html', context)
+        return redirect('index')
 
 def liked_video(request, id):
     user=request.user
@@ -347,3 +357,38 @@ def video_comment(request, id):
         }
         return JsonResponse(data, safe=False)
     return redirect(reverse("video_watch", args=[str(id)]))
+
+def video_show(request):
+    categories=Category.objects.all()
+    videos=VideoFiles.objects.all()
+    context={
+        'categories': categories,
+        'videos':videos
+    }
+    return render(request, 'videos_show.html', context)
+
+def video_show_by_cat(request, category_name):
+    if category_name=="All":
+        return redirect(video_show)
+    else:
+        categories=Category.objects.all()
+        category=Category.objects.get(name=category_name)
+        videos=VideoFiles.objects.filter(video_detail__category=category)
+        context={
+            'categories':categories,
+            'category_name':category_name,
+            'videos':videos
+        }
+        return render(request, 'videos_show_by_cat.html', context)
+
+def search_rs(request):
+    if request.method=='POST':
+        videos=VideoFiles.objects.filter(video_detail__title__icontains=request.POST['search'])
+        channel_search=Channel.objects.filter(name__icontains=request.POST['search'])
+        context={
+            'videos':videos,
+            'channel_search':channel_search,
+            'categories':Category.objects.all(),
+            'search_rs': request.POST['search']
+        }
+    return render(request, 'search_rs.html', context)

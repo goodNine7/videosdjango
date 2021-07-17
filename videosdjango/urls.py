@@ -21,13 +21,15 @@ from videos.views import (home, channel,
                           channel_edit,
                           upload_video,
                           upload_processing,
-                          video_info_process,
+                          video_info_process, video_show_by_cat,
                           video_watch_view,
                           liked_video,
                           disliked_video,
                           subcriber_view,
                           addtoplaylist_view,
-                          video_comment
+                          video_comment,
+                          video_show,
+                          search_rs
                           )
 
 urlpatterns = [
@@ -44,7 +46,10 @@ urlpatterns = [
     path('dislike/<id>', disliked_video, name="dislike_video"),
     path('subcribe/<id>', subcriber_view, name='subcriber'),
     path('add_to_playlist/<id>', addtoplaylist_view, name='add_to_playlist'),
-    path('comment/<id>', video_comment, name='comment')
+    path('comment/<id>', video_comment, name='comment'),
+    path('videos_show/', video_show, name='video_show'),
+    path('videos_show/?category=<category_name>', video_show_by_cat, name='video_by_cat'),
+    path('search/', search_rs, name='search_rs')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,

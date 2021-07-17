@@ -1,11 +1,12 @@
 {%extends 'base.html'%}
 {%load static%}
+{% load custom_tags %}
 {%block content%}
 <main class="w-full relative top-24 mt-4 overflow-hidden">
   <div class="xl:w-292.5 lg:w-242.5 md:w-187.5 mx-auto px-4">
     {%block content_channel%}
-    <div class="flex">
-      <div class="w-1/3 px-4">
+    <div class="flex space-x-4">
+      <div class="w-1/3 p-4">
         <div class="bg-primarybgu px-4 py-2 border-b border-gray-200">
           <span>{{channel.name}}</span>
         </div>
@@ -65,15 +66,15 @@
           </ul>
         </div>
       </div>
-      <div class="w-2/3 px-4">
+      <div class="w-2/3 p-4">
         {%block main%}
         <div class="bg-primarybgu px-4 py-2 border-b border-gray-200 flex justify-between">
           <div>Videos</div>
           <div class="text-blue-400"><a href="#">View All...</a></div>
         </div>
-        <div class="bg-white px-4 py-2 grid 2xl:grid-cols-3 xl:grid-cols-2 lg:grid-cols-1 gap-4 mb-8">
-          {%if videos%}
-          {%for video in videos%}
+        {%if videos%}
+        <div class="bg-white px-4 py-2 grid grid-cols-1 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 mb-8">
+          {%for video in videos|sort_by:'-uploaded'%}
           <div class="bg-white rounded shadow-md">
             <div class="relative overflow-hidden">
               <a href="{{video.get_absolute_url}}">
@@ -112,11 +113,11 @@
               </div>
             </div>
           </div>
-          {%endfor%}
-          {%else%}
-          <div class="p-2">Do not have any videos...</div>
-          {%endif%}
+          {%endfor%}          
         </div>
+        {%else%}
+        <div class="bg-white px-4 py-2 mb-8 text-xl tracking-wide rounded"">Do not have any videos...</div>
+        {%endif%}
 
         <div class="bg-primarybgu px-4 py-2 border-b border-gray-200 flex justify-between">
           <div>Playlist</div>
