@@ -55,6 +55,7 @@ class Channel(models.Model):
         upload_to=avatar_directory_path, default='default_avatar.jpg')
     slug = models.SlugField()
     description = models.TextField(blank=True)
+    created_at=models.DateTimeField(auto_now_add=True)
     subcribers=models.ManyToManyField(User, related_name='subcribers')
 
     def __str__(self):
@@ -66,7 +67,7 @@ class Channel(models.Model):
 class VideoFiles(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     video = models.FileField(upload_to=channel_directory_path)
-    channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name="channel_video")
     uploaded = models.DateTimeField(auto_now_add=True)
     like = models.ManyToManyField(User, related_name="video_loved")
     dislike = models.ManyToManyField(User, related_name="video_disliked")

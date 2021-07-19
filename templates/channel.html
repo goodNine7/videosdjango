@@ -10,7 +10,7 @@
         <div class="bg-primarybgu px-4 py-2 border-b border-gray-200">
           <span>{{channel.name}}</span>
         </div>
-        <div class="bg-white px-4 py-2 flex-col h-56 mb-4">
+        <div class="bg-white px-4 py-2 flex-col mb-4">
           {% if mychannel %}
           <ul class="text-sm font-semibold leading-8 pb-2 flex justify-start">
             <li>
@@ -33,20 +33,37 @@
           </ul>
           {% endif %}
           <div class="flex pb-2 justify-start">
-            <div class="w-30 h-30">
-              <div class="rounded overflow-hidden"><a href="#"><img src="{{channel.avatar.url}}" alt=""
-                    class="w-full h-full object-cover" /></a></div>
-              <div class="w-full h-8 bg-red-600 hover:bg-red-700 text-white items-center mt-2 rounded">
-                <button type="button" class="w-full h-full focus:outline-none font-semibold text-base">Subcribe</button>
-              </div>
+            <div class="w-30">
+              <div class="rounded overflow-hidden"><img src="{{channel.avatar.url}}" alt=""
+                  class="w-full h-30 object-cover" /></div>
+              {%if not mychannel%}
+              <form action="{%url 'subcriber' channel.slug 'channel' %}" method="POST"
+                class="subcriber-form rounded-lg overflow-hidden m-auto mt-2">
+                {%csrf_token%}
+                {%if user in channel.subcribers.all%}
+                <button type="submit" id="sub-btn" name="channel_id" value="{{channel.id}}"
+                  class="w-full sub-btn px-3 py-2 bg-gray-500 text-white font-medium text-l border focus:outline-none flex justify-center capitalize">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="sub-icon h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg><span id="sub-text">Subcribed</span></button>
+                {%else%}
+                <button type="submit" id="sub-btn" name="channel_id" value="{{channel.id}}"
+                  class="w-full sub-btn px-3 py-2 bg-red-700 text-white font-medium text-l border focus:outline-none flex justify-center capitalize">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="hidden sub-icon h-6 w-6" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg><span id="sub-text">Subcribe</span></button>
+                {%endif%}
+              </form>
+              {%endif%}
             </div>
             <div class="w-1/2 ml-5">
-              <ul class="">
-                <li>Total Videos: <span>97</span></li>
-                <li>Total Views: <span>97</span></li>
-                <li>Total Subcriber: <span>10</span></li>
-                <li>Joined: <span>1 day ago</span></li>
-                <li>Last Login: <span>1 day ago</span></li>
+              <ul class="tracking-wide">
+                <li class="pb-2"><span>{{channel.channel_video.all.count}} Videos</span></li>
+                <li class="pb-2"><span id="sub-count">{{channel.subcribers.all.count}} Subcribers</span></li>
+                <li class="pb-2">Joined: <span>{{channel.created_at|timesince}} ago</span></li>
+                <li class="pb-2">Last Login: <span>{{last_login|timesince}} ago</span></li>
               </ul>
             </div>
           </div>
@@ -99,8 +116,9 @@
             <div class="py-2 px-1 flex-col justify-center">
               {% if video.video_detail.title|length > 50 %}
               <div class="font-semibold capitalize tooltip hover:underline"><a
-                  href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:45}}</a><p
-                  class="tooltiptext text-sm bg-gray-700 text-white py-2 px-3 rounded-lg">{{video.video_detail.title}}</p>
+                  href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:45}}</a>
+                <p class="tooltiptext text-sm bg-gray-700 text-white py-2 px-3 rounded-lg">{{video.video_detail.title}}
+                </p>
               </div>
               {%else%}
               <div class="font-semibold capitalize hover:underline""><a href=" {{video.get_absolute_url}}">
@@ -113,13 +131,13 @@
               </div>
             </div>
           </div>
-          {%endfor%}          
+          {%endfor%}
         </div>
         {%else%}
         <div class="bg-white px-4 py-2 mb-8 text-xl tracking-wide rounded"">Do not have any videos...</div>
         {%endif%}
 
-        <div class="bg-primarybgu px-4 py-2 border-b border-gray-200 flex justify-between">
+        <div class=" bg-primarybgu px-4 py-2 border-b border-gray-200 flex justify-between">
           <div>Playlist</div>
           <div class="text-blue-400"><a href="#">View All...</a></div>
         </div>
@@ -217,3 +235,8 @@
   </div>
 </main>
 {%endblock%}
+
+{% block extra_body %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{%static 'js/ajax.js/'%}"></script>
+{% endblock %}

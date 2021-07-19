@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import EditChannelForm
+from django.contrib.auth.models import User
 from videos.models import Channel, Playlist, VideoComment, VideoFiles, VideoDetail, Category, ViewCount
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -38,42 +39,43 @@ def home(request):
     return render(request, 'base.html', context)
 
 def channel(request, slug):
-    try:
-        videos = VideoFiles.objects.all()
-        channel = Channel.objects.get(slug=slug)
-        if request.user.id:
-            current_user = request.user
-            mychannel = Channel.objects.get(user=current_user.id)
-            if slug == current_user.username:
-                videos = videos.filter(channel__slug=slug)
-                context = {
-                    'channel': channel,
-                    'mychannel': mychannel,
-                    'top_nav': mychannel,
-                    'videos': videos,
-                    'categories': Category.objects.all()
-                }
-            else:
-                videos = videos.filter(channel__slug=slug, video_detail__visibility=True)
-                context = {
-                    'channel': channel,
-                    'mychannel': '',
-                    'top_nav': mychannel,
-                    'videos': videos,
-                    'categories': Category.objects.all()
-                }
+    videos = VideoFiles.objects.all()
+    channel = Channel.objects.get(slug=slug)
+    last_login=User.objects.get(username=slug).last_login
+    if request.user.id:
+        current_user = request.user
+        mychannel = Channel.objects.get(user=current_user.id)
+        if slug == current_user.username:
+            videos = videos.filter(channel__slug=slug)
+            context = {
+                'channel': channel,
+                'mychannel': mychannel,
+                'top_nav': mychannel,
+                'videos': videos,
+                'categories': Category.objects.all(),
+                'last_login': last_login
+            }
         else:
             videos = videos.filter(channel__slug=slug, video_detail__visibility=True)
             context = {
                 'channel': channel,
                 'mychannel': '',
-                'top_nav': '',
+                'top_nav': mychannel,
                 'videos': videos,
-                'categories': Category.objects.all()
+                'categories': Category.objects.all(),
+                'last_login': last_login
             }
-        return render(request, 'channel.html', context)
-    except:
-        return redirect('index')
+    else:
+        videos = videos.filter(channel__slug=slug, video_detail__visibility=True)
+        context = {
+            'channel': channel,
+            'mychannel': '',
+            'top_nav': '',
+            'videos': videos,
+            'categories': Category.objects.all(),
+            'last_login': last_login
+        }
+    return render(request, 'channel.html', context)
 
 def channel_edit(request, slug):
     if request.user.username == slug:
@@ -272,7 +274,7 @@ def disliked_video(request, id):
         return JsonResponse(data, safe=False)
     return redirect(reverse("video_watch", args=[str(id)]))
 
-def subcriber_view(request, id):
+def subcriber_view(request, id, template):
     subcriber=request.user
     Subcribed=False
     if not request.user.is_authenticated:
@@ -297,7 +299,12 @@ def subcriber_view(request, id):
             'subcriber':channel.num_subcribers()
         }
         return JsonResponse(data, safe=False)
-    return redirect(reverse("video_watch", args=[str(id)]))
+    print(request.get_full_path())
+    print(template)
+    if template=="channel":
+        return redirect(reverse("channel", args=[str(id)]))
+    elif template=="watching":
+        return redirect(reverse("video_watch", args=[str(id)]))
 
 def addtoplaylist_view(request, id):
     Added=False

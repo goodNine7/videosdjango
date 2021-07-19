@@ -142,7 +142,7 @@
                         </button>
                     </div>
                     {%else%}
-                    <form action="{%url 'subcriber' my_video.id%}" method="POST"
+                    <form action="{%url 'subcriber' my_video.id 'watching' %}" method="POST"
                         class="subcriber-form rounded-lg overflow-hidden">
                         {%csrf_token%}
                         {%if user in my_video.channel.subcribers.all%}

@@ -44,7 +44,7 @@ urlpatterns = [
     path('watch/?v=<video_id>', video_watch_view, name="video_watch"),
     path('like/<uuid:id>', liked_video, name="like_video"),
     path('dislike/<id>', disliked_video, name="dislike_video"),
-    path('subcribe/<id>', subcriber_view, name='subcriber'),
+    path('subcribe/<id>/<slug:template>', subcriber_view, name='subcriber'),
     path('add_to_playlist/<id>', addtoplaylist_view, name='add_to_playlist'),
     path('comment/<id>', video_comment, name='comment'),
     path('videos_show/', video_show, name='video_show'),
