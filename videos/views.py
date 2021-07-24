@@ -2,7 +2,7 @@ from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import EditChannelForm
 from django.contrib.auth.models import User
-from videos.models import Channel, Playlist, VideoComment, VideoFiles, VideoDetail, Category, ViewCount
+from videos.models import Channel, Playlist, ReportChannel, VideoComment, VideoFiles, VideoDetail, Category, ViewCount
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
@@ -15,7 +15,7 @@ from django.urls import reverse
 # Create your views here.
 def home(request):
     allvideos = VideoFiles.objects.all()
-    allvideos = allvideos.filter(video_detail__visibility=True)
+    allvideos = allvideos.filter(video_detail__visibility=True, channel__visibility=True)
     try:
         current_user = request.user
         try:
@@ -39,43 +39,54 @@ def home(request):
     return render(request, 'base.html', context)
 
 def channel(request, slug):
-    videos = VideoFiles.objects.all()
-    channel = Channel.objects.get(slug=slug)
-    last_login=User.objects.get(username=slug).last_login
-    if request.user.id:
-        current_user = request.user
-        mychannel = Channel.objects.get(user=current_user.id)
-        if slug == current_user.username:
-            videos = videos.filter(channel__slug=slug)
-            context = {
-                'channel': channel,
-                'mychannel': mychannel,
-                'top_nav': mychannel,
-                'videos': videos,
-                'categories': Category.objects.all(),
-                'last_login': last_login
-            }
+    try:
+        allvideos = VideoFiles.objects.all()
+        channel = Channel.objects.get(slug=slug)
+        try:
+            videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel, visibility=True).video.all())
+        except:
+            videos_in_playlist=''
+        last_login=User.objects.get(username=slug).last_login
+        if request.user.id:
+            current_user = request.user
+            mychannel = Channel.objects.get(user=current_user.id)
+            if slug == current_user.username:
+                videos = allvideos.filter(channel__slug=slug)
+                videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel).video.all())
+                context = {
+                    'channel': channel,
+                    'mychannel': mychannel,
+                    'top_nav': mychannel,
+                    'videos': videos,
+                    'categories': Category.objects.all(),
+                    'last_login': last_login,
+                    'videos_in_playlist': videos_in_playlist
+                }
+            else:
+                videos = allvideos.filter(channel__slug=slug, video_detail__visibility=True)
+                context = {
+                    'channel': channel,
+                    'mychannel': '',
+                    'top_nav': mychannel,
+                    'videos': videos,
+                    'categories': Category.objects.all(),
+                    'last_login': last_login,
+                    'videos_in_playlist': videos_in_playlist
+                }
         else:
-            videos = videos.filter(channel__slug=slug, video_detail__visibility=True)
+            videos = allvideos.filter(channel__slug=slug, video_detail__visibility=True)
             context = {
                 'channel': channel,
                 'mychannel': '',
-                'top_nav': mychannel,
+                'top_nav': '',
                 'videos': videos,
                 'categories': Category.objects.all(),
-                'last_login': last_login
+                'last_login': last_login,
+                'videos_in_playlist': videos_in_playlist
             }
-    else:
-        videos = videos.filter(channel__slug=slug, video_detail__visibility=True)
-        context = {
-            'channel': channel,
-            'mychannel': '',
-            'top_nav': '',
-            'videos': videos,
-            'categories': Category.objects.all(),
-            'last_login': last_login
-        }
-    return render(request, 'channel.html', context)
+        return render(request, 'channel.html', context)
+    except:
+        return redirect('index')
 
 def channel_edit(request, slug):
     if request.user.username == slug:
@@ -191,9 +202,9 @@ def video_info_process(request):
 
 def video_watch_view(request, video_id):
     try:
-        video=get_object_or_404(VideoFiles, id=video_id)
+        video=get_object_or_404(VideoFiles, id=video_id, channel__visibility=True)
         video_cat=video.video_detail.category.name
-        suggested_video=VideoFiles.objects.filter(video_detail__category__name=video_cat).exclude(id=video_id)
+        suggested_video=VideoFiles.objects.filter(video_detail__category__name=video_cat, channel__visibility=True).exclude(id=video_id)
         ip=request.META['REMOTE_ADDR']
         if not request.session.exists(request.session.session_key):
             request.session.create() 
@@ -348,26 +359,32 @@ def video_comment(request, id):
         }
         return JsonResponse(data, safe=False)
     if request.method=="POST":
-        comment=request.POST['comment']
-        video_id=request.POST['video_id']
-        video=VideoFiles.objects.get(id=video_id)
-        if comment is not None:
-            create_comment=VideoComment(video=video, channel=Channel.objects.get(slug=request.user), comment=comment)
-            create_comment.save()
-        channel_name=Channel.objects.get(slug=request.user)
-        channel_avatar=channel_name.avatar.url
-        data={
-            "total_cmt": video.video_comment.all().count(),
-            "channel_name": str(channel_name),
-            "channel_avatar": str(channel_avatar),
-            "channel_slug":str(request.user)
-        }
+        if Channel.objects.get(slug=request.user).visibility == False:
+            data={
+                'blocked': 'You has been blocked !!!'
+            }
+        else:
+            comment=request.POST['comment']
+            video_id=request.POST['video_id']
+            video=VideoFiles.objects.get(id=video_id)
+            if comment is not None:
+                create_comment=VideoComment(video=video, channel=Channel.objects.get(slug=request.user), comment=comment)
+                create_comment.save()
+            channel_name=Channel.objects.get(slug=request.user)
+            channel_avatar=channel_name.avatar.url
+            data={
+                "total_cmt": video.video_comment.all().count(),
+                "channel_name": str(channel_name.name),
+                "channel_avatar": str(channel_avatar),
+                "channel_slug":str(request.user)
+            }
         return JsonResponse(data, safe=False)
     return redirect(reverse("video_watch", args=[str(id)]))
 
 def video_show(request):
     categories=Category.objects.all()
     videos=VideoFiles.objects.all()
+    videos=videos.filter(channel__visibility=True)
     context={
         'categories': categories,
         'videos':videos
@@ -380,7 +397,7 @@ def video_show_by_cat(request, category_name):
     else:
         categories=Category.objects.all()
         category=Category.objects.get(name=category_name)
-        videos=VideoFiles.objects.filter(video_detail__category=category)
+        videos=VideoFiles.objects.filter(video_detail__category=category, channel__visibility=True)
         context={
             'categories':categories,
             'category_name':category_name,
@@ -390,7 +407,7 @@ def video_show_by_cat(request, category_name):
 
 def search_rs(request):
     if request.method=='POST':
-        videos=VideoFiles.objects.filter(video_detail__title__icontains=request.POST['search'])
+        videos=VideoFiles.objects.filter(video_detail__title__icontains=request.POST['search'], channel__visibility=True)
         channel_search=Channel.objects.filter(name__icontains=request.POST['search'])
         context={
             'videos':videos,
@@ -399,3 +416,89 @@ def search_rs(request):
             'search_rs': request.POST['search']
         }
     return render(request, 'search_rs.html', context)
+
+def report_channel(request, slug):
+    if not request.user.is_authenticated:
+            current_url=request.get_full_path()
+            login_url=reverse("account_login")
+            login_required="{}?next={}".format(login_url, current_url)
+            data={
+                'login_required':login_required
+            }
+            return JsonResponse(data, safe=False)
+    if request.method=="POST":
+        channel=Channel.objects.get(slug=request.POST['channel'])
+        report_reason=request.POST['report_reason']
+        if not(len(report_reason)):
+            data={
+                'text_required': 'Please fill out this field.'
+            }
+            return JsonResponse(data, safe=False)
+        else:
+            report_channel=ReportChannel(channel=channel, reporter=request.user, report_reason=report_reason)
+            report_channel.save()
+            data={
+                'success_mes': 'You have successfully reported.'
+            }
+            return JsonResponse(data, safe=False)
+
+    return redirect(reverse('channel', args=[str(slug)]))
+
+def remove_videos_playlist(request):
+    if request.method=="POST":
+        channel=Channel.objects.get(slug=request.user)
+        videos=VideoFiles.objects.get(id=request.POST['video_id'])
+        playlist=Playlist.objects.get(channel=channel)
+        playlist.video.remove(videos)
+        data={
+            "videos_count": playlist.video.all().count(),
+            "video_id": videos.id,
+            "success_message": 'Removed !'
+        }
+        return JsonResponse(data, safe=False)
+    return redirect(reverse('channel', args=[str(request.user)]))
+
+def del_myvideos(request):
+    if request.method=="POST":
+        videos=VideoFiles.objects.get(id=request.POST['video_id'])
+        videos.delete()
+        data={
+            "video_id": videos.id,
+            "success_message": 'Deleted !'
+        }
+        return JsonResponse(data, safe=False)
+    return redirect(reverse('channel', args=[str(request.user)]))
+
+def edit_myvideos(request, video_id):
+    if request.method == "POST":
+        channel=Channel.objects.get(slug=request.user)
+        videos=VideoFiles.objects.get(id=video_id)
+        other_category=Category.objects.all().exclude(name=videos.video_detail.category)
+        context={
+            'channel': channel,
+            'mychannel': channel,
+            'top_nav': channel,
+            'categories': Category.objects.all(),
+            'other_category': other_category,
+            'videos': videos
+        }
+        return render(request, 'videos_edit.html', context)
+    return redirect(reverse('channel', args=[str(request.user)]))
+
+def processing_edit_myvideos(request, video_id):
+    if request.method=="POST":
+        videos=VideoFiles.objects.get(id=video_id)
+        videos_detail=VideoDetail.objects.filter(videofile=videos)
+        videos_detail.update(
+            title=request.POST['title'], 
+            description=request.POST['description'],
+            category=request.POST['category'],
+            visibility=request.POST['visibility']
+            )
+        if (request.FILES):
+            videos_detail.update(thumbnail=request.FILES['thumbnail'])
+        data={
+            'success_mes':'Update successfully !!!'
+        }
+        return JsonResponse(data, safe=False)
+    return redirect(reverse('channel', args=[str(request.user)]))

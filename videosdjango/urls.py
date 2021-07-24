@@ -29,7 +29,12 @@ from videos.views import (home, channel,
                           addtoplaylist_view,
                           video_comment,
                           video_show,
-                          search_rs
+                          search_rs,
+                          report_channel,
+                          remove_videos_playlist,
+                          del_myvideos,
+                          edit_myvideos,
+                          processing_edit_myvideos
                           )
 
 urlpatterns = [
@@ -49,7 +54,12 @@ urlpatterns = [
     path('comment/<id>', video_comment, name='comment'),
     path('videos_show/', video_show, name='video_show'),
     path('videos_show/?category=<category_name>', video_show_by_cat, name='video_by_cat'),
-    path('search/', search_rs, name='search_rs')
+    path('search/', search_rs, name='search_rs'),
+    path('report_channel/<slug>', report_channel, name='report_channel'),
+    path('remove_videos_playlist/', remove_videos_playlist, name='remove_videos_playlist'),
+    path('del_myvideos', del_myvideos, name='del_myvideos'),
+    path('edit/videos/<video_id>', edit_myvideos, name='edit_myvideos'),
+    path('edit/videos/processing/<video_id>', processing_edit_myvideos, name='processing_edit_myvideos')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL,

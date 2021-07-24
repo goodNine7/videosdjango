@@ -6,7 +6,6 @@ var app = app || {};
     ajax=function(data){
         var httpRequest = new XMLHttpRequest()
         var uploaded
-
         httpRequest.addEventListener('readystatechange', function(){
             if(this.readyState===4){
                 if(this.status===200){

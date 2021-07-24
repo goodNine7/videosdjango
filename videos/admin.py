@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Channel, Category, VideoFiles, VideoDetail, Playlist, VideoComment
+from .models import Channel, Category, VideoFiles, VideoDetail, Playlist, VideoComment, ReportChannel
 
 # Register your models here.
 admin.site.register(Channel)
@@ -8,3 +8,4 @@ admin.site.register(VideoFiles)
 admin.site.register(VideoDetail)
 admin.site.register(Playlist)
 admin.site.register(VideoComment)
+admin.site.register(ReportChannel)

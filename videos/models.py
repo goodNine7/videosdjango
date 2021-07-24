@@ -56,10 +56,11 @@ class Channel(models.Model):
     slug = models.SlugField()
     description = models.TextField(blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
+    visibility=models.BooleanField(choices=((False,"private"), (True,"public")))
     subcribers=models.ManyToManyField(User, related_name='subcribers')
 
     def __str__(self):
-        return self.name
+        return f"({self.slug}) - {self.name}"
 
     def num_subcribers(self):
         return self.subcribers.count()
@@ -129,4 +130,17 @@ class VideoComment(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.channel.name}: {self.comment[:(int(len(self.comment)/int(2)))]}"
+        if(len(self.comment) > 50):
+            comment=self.comment[:int(len(self.comment)/int(2))]
+        else:
+            comment=self.comment
+        return f"{self.channel}: {comment}"
+
+class ReportChannel(models.Model):
+    channel=models.ForeignKey(Channel, on_delete=CASCADE, related_name='report_channel')
+    reporter=models.CharField(max_length=20)
+    report_reason=models.TextField()
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.channel}: {self.report_reason}"

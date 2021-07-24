@@ -200,6 +200,10 @@ $(document).ready(function(){
                 if(response.login_required){
                     window.location.href=response.login_required
                 }
+                else if(response.blocked){
+                    $('#comment').val('')
+                    alert(response.blocked)
+                }
                 else{
                     $('#total-cmt').text(response.total_cmt + ' comments')
                     $('#comment').val('')
@@ -214,5 +218,168 @@ $(document).ready(function(){
             }
         })
     })
+
+    $('.report-mes').click(function(e){
+        e.preventDefault()
+        $('.report-mes').addClass('hidden')
+    })
+
+    $('#close-report-form').click(function(e){
+        e.preventDefault()
+        $('#report-area').addClass('hidden')
+    })
+
+    $('#open-report-form').click(function(e){
+        e.preventDefault()
+        $('#report-area').removeClass('hidden')
+    })
+
+    $('.report-form #report-reason').on('change', function(){
+        if($(this).attr("value") == "Other"){
+            $('#other-reason').removeClass('hidden')
+        }
+        else{
+            $('#other-reason').addClass('hidden')
+        }
+    })
+
+    $('.report-form').submit(function(e){
+        e.preventDefault()
+        const channel=$('#btn-send-report').val() 
+        const url=$(this).attr('action')
+        const token=$('input[name=csrfmiddlewaretoken]').val()
+        let report_reason=$('#report-reason:checked').val()
+        if(report_reason == 'Other'){
+            report_reason=$('#other-reason').val()
+        }
+        $.ajax({
+            method: "POST",
+            url: url,
+            headers: {'X-CSRFToken': token},
+            data: {
+                channel: channel,
+                report_reason: report_reason
+            },
+            success:function(response){
+                if(response.login_required){
+                    window.location.href=response.login_required
+                }
+                else{
+                    if(response.text_required){
+                        $('.report-mes').removeClass('hidden bg-green-300')
+                        $('.report-mes').addClass('bg-red-300')
+                        $('.report-mes').text(response.text_required)
+                    }
+                    else{
+                        $('#other-reason').val('')
+                        $('.report-mes').removeClass('hidden')
+                        $('.report-mes').addClass('bg-green-300')
+                        $('.report-mes').text(response.success_mes)
+                    }
+                }
+            },
+            error:function(response){
+                console.log('Failed', response)
+            }
+        })
+    })
+
+    $('.form-remove-videos-playlist').submit(function(e){
+        e.preventDefault()
+        const video_id=$(this).find('.id-videos-playlist').val()
+        const token=$(this).find('input[name=csrfmiddlewaretoken]').val()
+        const url=$(this).attr('action')
+        const target=$(this).find('.id-videos-playlist')
+        if(confirm('Remove ?')){
+            $.ajax({
+                method:"POST",
+                url:url,
+                headers:{'X-CSRFToken':token},
+                data:{
+                    video_id:video_id
+                },
+                success:function(response){
+                    alert(response.success_message)
+                    target.closest('.items').remove()
+                },
+                error:function(response){
+                    console.log('Failed', response)
+                }
+            })
+        }
+    })
+
+    $('.form-del-myvideos').submit(function(e){
+        e.preventDefault()
+        const video_id=$(this).find('.id-myvideos').val()
+        const token=$(this).find('input[name=csrfmiddlewaretoken]').val()
+        const url=$(this).attr('action')
+        const target=$(this).find('.id-myvideos')
+        const target_in_playlist=$('.id-videos-playlist').filter(function(){
+            return this.value == video_id
+        })
+
+        if(confirm('Delete ?')){
+            $.ajax({
+                method:"POST",
+                url:url,
+                headers:{'X-CSRFToken':token},
+                data:{
+                    video_id:video_id
+                },
+                success:function(response){
+                    alert(response.success_message)
+                    target.closest('.items').remove()
+                    if(target_in_playlist.length){
+                        target_in_playlist.closest('.items').remove()
+                    }
+                },
+                error:function(response){
+                    console.log('Failed', response)
+                }
+            })
+        }
+    })
+
+    $('.form-edit-myvideos').submit(function(e){
+        e.preventDefault()
+        var form_data = new FormData();
+        const title=$(this).find('#title').val()
+        const description=$(this).find('#description').val()
+        const thumbnail=$(this).find('#thumbnail').prop('files')
+        const category=$(this).find('#category option:selected').val()
+        const visibility=$(this).find('#visibility option:selected').val()
+        const url=$(this).attr('action')
+        const token=$('input[name=csrfmiddlewaretoken]').val()
+        form_data.append('title', title)
+        form_data.append('description', description)
+        form_data.append('thumbnail', thumbnail[0])
+        form_data.append('category', category)
+        form_data.append('visibility', visibility)
+        
+        $.ajax({
+            method: "POST",
+            url:url,
+            headers:{'X-CSRFToken': token},
+            processData: false,
+            contentType: false,
+            data:form_data,
+            success:function(response){
+                $('ul.messages').removeClass('hidden')
+                setTimeout(() => {
+                    $('ul.messages').addClass('hidden')
+                }, 2500);
+            },
+            error:function(response){
+                console.log('Failed', response)
+            }
+        })
+    })
+
+    //close messages
+    $('ul.messages').click(function(){
+        $(this).addClass('hidden')
+    })
+
 
 });
