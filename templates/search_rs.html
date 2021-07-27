@@ -16,25 +16,32 @@
                 <img src="{{channel.avatar.url}}" alt="" class="w-full h-48 object-cover" />
             </a>
         </div>
-        <div class="flex py-2 px-1 space-x-4">
+        <div class="flex py-2 px-4 space-x-4 break-all">
             <div class="w-full flex-col justify-center">
-                {% if channel.name|length > 50 %}
+                {% if channel.name|length > 55 %}
                 <div class="font-semibold capitalize tooltip hover:underline"><a
-                        href="#">{{channel.name|truncatechars:45}}</a>
+                        href="#">{{channel.name|truncatechars:55}}</a>
                     <p class="tooltiptext text-sm bg-gray-700 text-white py-2 px-3 rounded-lg">
                         {{channel.name}}</p>
                 </div>
                 {%else%}
-                <div class="font-semibold capitalize hover:underline""><a href="{% url 'channel' channel.slug %}">
+                <div class="font-semibold capitalize hover:underline""><a href=" {% url 'channel' channel.slug %}">
                     {{channel.name}}</a></div>
                 {%endif%}
-                <!-- <div class="text-sm hover:underline"><a
-                        href="{%url 'channel' channel.slug%}">{{channel.name}}</a></div> -->
-                <!-- <div class="flex text-xs">
-                    <div class="text-gray-500 flex-shrink-0">{{video.view_count.count}} views</div>
+                <div class="flex text-sm space-x-1">
+                    <div class="text-gray-500 flex-shrink-0">{{channel.num_subcribers}} subcribers</div>
                     <div>&nbsp;&bull;&nbsp;</div>
-                    <div class="flex-shrink-0">{{video.uploaded|timesince}} ago</div>
-                </div> -->
+                    <div class="flex-shrink-0">{{channel.channel_video.count}} videos</div>
+                </div>
+                {% if channel.description|length > 30 %}
+                <div class="text-sm tooltip">{{channel.description|truncatechars:30}}
+                    <p class="tooltiptext text-sm bg-gray-700 text-white py-2 px-3 rounded-lg">
+                        {{channel.description}}
+                    </p>
+                </div>
+                {%else%}
+                <div class="text-sm">{{channel.description}}</div>
+                {%endif%}
             </div>
         </div>
     </div>
@@ -49,33 +56,31 @@
         <div class="relative rounded-t overflow-hidden">
             <a href="{{video.get_absolute_url}}">
                 <img src="{{video.video_detail.thumbnail.url}}" alt="" class="w-full h-48 object-cover" />
-                <div class="
-                bg-black
-                text-white
-                font-semibold
-                text-sm
-                rounded-lg
-                absolute
-                bottom-0
-                right-0
-                m-1
-                py-1
-                px-2
-              ">
+                <div
+                    class="bg-black text-white font-semibold text-sm rounded-lg absolute bottom-0 right-0 m-1 py-1 px-2">
                     {{video.video_detail.durations}}
+                </div>
+                <div
+                    class="bg-red-200 py-1 px-2 m-1 rounded-lg absolute font-semibold top-0 left-0 text-xs flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-4 w-4 inline-block text-red-500"
+                        viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                            clip-rule="evenodd" />
+                    </svg><span class="love-text">{{video.favorite_percent}}%</span>
                 </div>
             </a>
         </div>
-        <div class="flex py-2 px-1 space-x-4">
+        <div class="flex py-2 px-1 space-x-4 break-all">
             <div class="flex-shrink-0">
                 <div class="rounded-full overflow-hidden"><a href="{%url 'channel' video.channel.slug%}"><img
                             src="{{video.channel.avatar.url}}" alt="" class="w-9 h-9 object-cover" /></a>
                 </div>
             </div>
             <div class="w-full flex-col justify-center">
-                {% if video.video_detail.title|length > 50 %}
+                {% if video.video_detail.title|length > 55 %}
                 <div class="font-semibold capitalize tooltip hover:underline"><a
-                        href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:45}}</a>
+                        href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:55}}</a>
                     <p class="tooltiptext text-sm bg-gray-700 text-white py-2 px-3 rounded-lg">
                         {{video.video_detail.title}}</p>
                 </div>

@@ -225,10 +225,10 @@
                             </div>
                         </a>
                     </div>
-                    <div class="w-full flex-col justify-center h-full">
+                    <div class="w-full flex-col justify-center h-full break-all">
                         {% if video.video_detail.title|length > 50 %}
                         <div class="font-semibold capitalize tooltip hover:underline"><a
-                                href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:35}}</a>
+                                href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:49}}</a>
                             <p class="tooltiptext text-sm bg-gray-700 text-white py-2 px-3 rounded-lg">
                                 {{video.video_detail.title}}</p>
                         </div>

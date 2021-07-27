@@ -406,14 +406,14 @@ def video_show_by_cat(request, category_name):
         return render(request, 'videos_show_by_cat.html', context)
 
 def search_rs(request):
-    if request.method=='POST':
-        videos=VideoFiles.objects.filter(video_detail__title__icontains=request.POST['search'], channel__visibility=True)
-        channel_search=Channel.objects.filter(name__icontains=request.POST['search'])
+    if request.method=='GET':
+        videos=VideoFiles.objects.filter(video_detail__title__icontains=request.GET['search'], channel__visibility=True)
+        channel_search=Channel.objects.filter(name__icontains=request.GET['search'])
         context={
             'videos':videos,
             'channel_search':channel_search,
             'categories':Category.objects.all(),
-            'search_rs': request.POST['search']
+            'search_rs': request.GET['search']
         }
     return render(request, 'search_rs.html', context)
 

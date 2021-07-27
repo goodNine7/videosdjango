@@ -50,8 +50,7 @@
               UPLOAD
             </button></a>
         </div>
-        <form action="{%url 'search_rs'%}" method="POST" class="flex m-auto">
-          {%csrf_token%}
+        <form action="{%url 'search_rs'%}" method="GET" class="flex m-auto">
           <input type="text" name="search" id="search" placeholder="Search"
             class="py-1 px-2 rounded-l text-black focus:outline-none" required />
           <button type="submit" class="

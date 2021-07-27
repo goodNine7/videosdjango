@@ -71,16 +71,16 @@
               </div>
             </a>
           </div>
-          <div class="flex py-2 px-1 space-x-4">
+          <div class="flex py-2 px-2 space-x-4 break-all">
             <div class="flex-shrink-0">
               <div class="rounded-full overflow-hidden"><a href="{%url 'channel' video.channel.slug%}"><img
                     src="{{video.channel.avatar.url}}" alt="" class="w-9 h-9 object-cover" /></a>
               </div>
             </div>
             <div class="w-full flex-col justify-center">
-              {% if video.video_detail.title|length > 50 %}
+              {% if video.video_detail.title|length > 55 %}
               <div class="font-semibold capitalize tooltip hover:underline"><a
-                  href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:45}}</a>
+                  href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:55}}</a>
                 <p class="tooltiptext text-sm bg-gray-700 text-white py-2 px-3 rounded-lg">{{video.video_detail.title}}
                 </p>
               </div>
@@ -132,16 +132,16 @@
               </div>
             </a>
           </div>
-          <div class="flex py-2 px-1 space-x-4">
+          <div class="flex py-2 px-1 space-x-4 break-all">
             <div class="flex-shrink-0">
               <div class="rounded-full overflow-hidden"><a href="{%url 'channel' video.channel.slug%}"><img
                     src="{{video.channel.avatar.url}}" alt="" class="w-9 h-9 object-cover" /></a>
               </div>
             </div>
             <div class="w-full flex-col justify-center">
-              {% if video.video_detail.title|length > 50 %}
+              {% if video.video_detail.title|length > 55 %}
               <div class="font-semibold capitalize tooltip hover:underline"><a
-                  href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:45}}</a>
+                  href="{{video.get_absolute_url}}">{{video.video_detail.title|truncatechars:55}}</a>
                 <p class="tooltiptext text-sm bg-gray-700 text-white py-2 px-3 rounded-lg">{{video.video_detail.title}}
                 </p>
               </div>
