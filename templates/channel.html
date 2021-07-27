@@ -266,6 +266,8 @@
               <div class="font-semibold capitalize hover:underline""><a href=" {{video.get_absolute_url}}">
                 {{video.video_detail.title}}</a></div>
               {%endif%}
+              <div class="text-sm hover:underline"><a
+                href="{%url 'channel' video.channel.slug%}">{{video.channel.name}}</a></div>
               <div class="flex text-xs">
                 <div class="text-gray-500 flex-shrink-0">{{video.view_count.count}} views</div>
                 <div>&nbsp;&bull;&nbsp;</div>
