@@ -13,6 +13,7 @@ $(document).ready(function(){
         const video_id=$('.like-btn').val()
         const token=$('input[name=csrfmiddlewaretoken]').val()
         const url=$(this).attr('action')
+        let target=$(this)
 
         $.ajax({
             method: "POST",
@@ -41,11 +42,11 @@ $(document).ready(function(){
                     favorite=Math.round(100/(response.like_count+response.dislike_count))*response.like_count
                     if(isNaN(favorite)){
                         favorite=parseInt(0)
-                        $('.love-text').text("0%")
+                        target.find('.love-text').text("0%")
                     }
                     else{
                         favorite=parseInt(favorite)
-                        $('.love-text').text(favorite + "%")
+                        target.find('.love-text').text(favorite + "%")
                     }
                     document.getElementById('love-bar').style.width=favorite + "%"
                 }
@@ -61,6 +62,7 @@ $(document).ready(function(){
         const video_id=$('.dislike-btn').val()
         const token=$('input[name=csrfmiddlewaretoken]').val()
         const url=$(this).attr('action')
+        let target=$(this)
 
         $.ajax({
             method: "POST",
@@ -89,11 +91,11 @@ $(document).ready(function(){
                     favorite=Math.round(100/(response.like_count+response.dislike_count))*response.like_count
                     if(isNaN(favorite)){
                         favorite=parseInt(0)
-                        $('.love-text').text("0%")
+                        target.find('.love-text').text("0%")
                     }
                     else{
                         favorite=parseInt(favorite)
-                        $('.love-text').text(favorite + "%")
+                        target.find('.love-text').text(favorite + "%")
                     }
                     document.getElementById('love-bar').style.width=favorite + "%"
                 } 

@@ -1,0 +1,79 @@
+{% load static %}
+<div class="
+    fixed
+    top-9
+    right-0
+    left-0
+    z-1040
+    bg-primarybgn
+    text-gray-300
+    items-center
+    w-full
+    h-15
+  ">
+  <div class="flex xl:w-292.5 lg:w-242.5 md:w-187.5 mx-auto px-4">
+    <div class="mr-10 h-full">
+      <a href="/"><img src="{% static '../static/image/logo.png' %}" alt="logo" /></a>
+    </div>
+    <div class="w-full flex justify-between items-center">
+      <ul class="flex font-semibold tracking-widest">
+        <li class="cursor-pointer">
+          <a href="{%url 'video_show'%}">
+            <span>Videos</span>
+          </a>
+        </li>
+        {%for category in categories%}
+        <li class="ml-4 cursor-pointer">
+          <a href="{%url 'video_show'%}?category={{category.name}}">
+            <span>{{category.name}}</span>
+          </a>
+        </li>
+        {%endfor%}
+      </ul>
+      <div class="flex space-x-2 items-center">
+        <div class="btn-upload-nav">
+          <a href="{%url 'upload_video'%}"><button type="button" class="
+                bg-gradient-to-r
+                from-green-400
+                to-blue-400
+                hover:from-pink-400
+                hover:to-yellow-400
+                text-black
+                py-1
+                px-3
+                font-semibold
+                rounded
+                tracking-wide
+                border-none
+                focus:outline-none
+              ">
+              UPLOAD
+            </button></a>
+        </div>
+        <form action="{%url 'search_rs'%}" method="GET" class="flex m-auto">
+          <input type="text" name="search" id="search" placeholder="Search"
+            class="py-1 px-2 rounded-l text-black focus:outline-none" required />
+          <button type="submit" class="
+                bg-gradient-to-r
+                from-green-400
+                to-blue-400
+                hover:from-pink-400
+                hover:to-yellow-400
+                text-black text-sm
+                py-1
+                px-2
+                rounded-r
+                focus:outline-none
+                outline-none
+              ">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                clip-rule="evenodd" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

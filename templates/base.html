@@ -14,8 +14,8 @@
 
 <body class="bg-primarybgc font-sans">
   <!-- content wrapper-->
-  {% block body %} {% include 'topnav_videos.html'%}
-  {% include 'navbar_videos.html' %}
+  {% block body %} {% include 'main/topnav_videos.html'%}
+  {% include 'main/navbar_videos.html' %}
   {%block message%}
   {% if form.errors %}
   <ul class="messages cursor-pointer relative top-24 bg-red-300 p-2 font-semibold flex-col">
@@ -52,7 +52,7 @@
       </div>
       {%if videos%}
       <div class="my-4 grid grid-cols-1 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 py-2 px-4">
-        {%for video in videos|sort_by:'-uploaded'%}
+        {%for video in videos|sort_by:'-uploaded'|slice:":12"%}
         <div class="bg-white rounded shadow-md">
           <div class="relative rounded-t overflow-hidden">
             <a href="{{video.get_absolute_url}}">
@@ -85,7 +85,7 @@
                 </p>
               </div>
               {%else%}
-              <div class="font-semibold capitalize hover:underline""><a href=" {{video.get_absolute_url}}">
+              <div class="font-semibold capitalize hover:underline"><a href=" {{video.get_absolute_url}}">
                 {{video.video_detail.title}}</a></div>
               {%endif%}
               <div class="text-sm hover:underline"><a
@@ -101,7 +101,7 @@
         {%endfor%}
       </div>
       {%else%}
-      <div class="py-2 px-4 my-4 text-xl tracking-widest"">Do not have any videos...</div>
+      <div class="py-2 px-4 my-4 text-xl tracking-widest">Do not have any videos...</div>
       {%endif%}
       
       <div class=" flex justify-between font-medium text-lg tracking-wide pb-2 border-b border-gray-300">
@@ -112,7 +112,7 @@
       </div>
       {%if videos%}
       <div class="my-4 grid grid-cols-1 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 py-2 px-4">
-        {%for video in videos|sort_by:'-uploaded'%}
+        {%for video in videos|sort_by:'-uploaded'|slice:":12"%}
         {% if video.favorite_percent > 60 %}
         <div class="bg-white rounded shadow-md">
           <div class="relative rounded-t overflow-hidden">
@@ -146,7 +146,7 @@
                 </p>
               </div>
               {%else%}
-              <div class="font-semibold capitalize hover:underline""><a href=" {{video.get_absolute_url}}">
+              <div class="font-semibold capitalize hover:underline"><a href=" {{video.get_absolute_url}}">
                 {{video.video_detail.title}}</a></div>
               {%endif%}
               <div class="text-sm hover:underline"><a
@@ -163,7 +163,7 @@
         {%endfor%}
       </div>
       {%else%}
-      <div class=" py-2 px-4 my-4 text-xl tracking-widest"">Do not have any videos...</div>
+      <div class=" py-2 px-4 my-4 text-xl tracking-widest">Do not have any videos...</div>
           {%endif%}
         </div>
   </main>

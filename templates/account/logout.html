@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block head_title %}{% trans "Log Out" %}{% endblock %}
+{% block content %}
+<main class="w-full relative top-24 my-4 flex justify-center">
+  <div class="
+      relative
+      bg-white
+      w-100
+      p-10
+      rounded-xl
+      shadow-md
+    ">
+    <div class="text-xl font-bold text-center">Log Out</div>
+    <form action="{% url 'account_logout'%}" class="" method="post">
+      {% csrf_token %}
+      <h1 class="py-2 text-lg tracking-wide">
+        Are you sure you want to log out?
+      </h1>
+      <div class="my-8 h-10 relative overflow-hidden rounded-md">
+        <div class="flex justify-around w-full h-full">
+          <button type="submit" class="
+              w-20
+              h-auto
+              py-2
+              font-semibold
+              uppercase
+              tracking-wide
+              border-none
+              outline-none
+              rounded-md
+              focus:outline-none
+              bg-gradient-to-r
+            from-green-400
+            to-blue-400
+            hover:from-pink-400
+            hover:to-yellow-400
+              ">
+            Submit
+          </button>
+          <a href="{{request.GET.next}}" class="
+              w-20
+              h-auto
+              text-center
+              py-2
+              font-semibold
+              cursor-pointer
+              uppercase
+              tracking-wide
+              border-none
+              outline-none
+              rounded-md
+              focus:outline-none
+              bg-gradient-to-r
+            from-green-400
+            to-blue-400
+            hover:from-pink-400
+            hover:to-yellow-400
+            ">
+            Cancel
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+{% endblock %}

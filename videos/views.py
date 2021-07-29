@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.http import HttpResponse
+from django.core.paginator import Paginator
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import EditChannelForm
 from django.contrib.auth.models import User
@@ -22,7 +24,7 @@ def home(request):
             channel = Channel.objects.get(user=current_user.id)
         except:
             Channel.objects.get_or_create(
-                name=current_user.username, user=current_user, slug=current_user.username)
+                name=current_user.username, user=current_user, slug=current_user.username, visibility=True)
             channel = Channel.objects.get(user=current_user.id)
         context = {
             'channel': channel,
@@ -52,7 +54,10 @@ def channel(request, slug):
             mychannel = Channel.objects.get(user=current_user.id)
             if slug == current_user.username:
                 videos = allvideos.filter(channel__slug=slug)
-                videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel).video.all())
+                try:
+                    videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel).video.all())
+                except:
+                    videos_in_playlist=''
                 context = {
                     'channel': channel,
                     'mychannel': mychannel,
@@ -84,7 +89,7 @@ def channel(request, slug):
                 'last_login': last_login,
                 'videos_in_playlist': videos_in_playlist
             }
-        return render(request, 'channel.html', context)
+        return render(request, 'main/channel.html', context)
     except:
         return redirect('index')
 
@@ -137,7 +142,7 @@ def channel_edit(request, slug):
                 'top_nav': mychannel,
                 'categories': Category.objects.all()
             }
-        return render(request, 'channel_edit.html', context)
+        return render(request, 'main/channel_edit.html', context)
     else:
         return redirect('index')
 
@@ -156,7 +161,7 @@ def upload_video(request):
         'success_message': messages,
         'categories': Category.objects.all()
     }
-    return render(request, 'file_upload.html', context)
+    return render(request, 'main/file_upload.html', context)
 
 def upload_processing(request):
     channel = Channel.objects.get(slug=request.user.username)
@@ -223,7 +228,7 @@ def video_watch_view(request, video_id):
             "recommend_videos":suggested_video,
             'categories': Category.objects.all()
         }
-        return render(request, 'watch.html', context)
+        return render(request, 'main/watch.html', context)
     except:
         return redirect('index')
 
@@ -310,8 +315,6 @@ def subcriber_view(request, id, template):
             'subcriber':channel.num_subcribers()
         }
         return JsonResponse(data, safe=False)
-    print(request.get_full_path())
-    print(template)
     if template=="channel":
         return redirect(reverse("channel", args=[str(id)]))
     elif template=="watching":
@@ -382,40 +385,51 @@ def video_comment(request, id):
     return redirect(reverse("video_watch", args=[str(id)]))
 
 def video_show(request):
-    categories=Category.objects.all()
-    videos=VideoFiles.objects.all()
-    videos=videos.filter(channel__visibility=True)
-    context={
-        'categories': categories,
-        'videos':videos
-    }
-    return render(request, 'videos_show.html', context)
-
-def video_show_by_cat(request, category_name):
-    if category_name=="All":
-        return redirect(video_show)
-    else:
-        categories=Category.objects.all()
-        category=Category.objects.get(name=category_name)
-        videos=VideoFiles.objects.filter(video_detail__category=category, channel__visibility=True)
-        context={
-            'categories':categories,
-            'category_name':category_name,
-            'videos':videos
-        }
-        return render(request, 'videos_show_by_cat.html', context)
+    try:
+        if request.GET.get('category'):
+            category_name=request.GET['category']
+            categories=Category.objects.all()
+            category=Category.objects.get(name=category_name)
+            videos=VideoFiles.objects.filter(video_detail__category=category, channel__visibility=True)
+            paginator=Paginator(videos, 2)
+            page_number=request.GET.get('page')
+            page_videos=paginator.get_page(page_number)
+            context={
+                'categories':categories,
+                'category_name':category_name,
+                'videos':page_videos
+            }
+            return render(request, 'main/videos_show_by_cat.html', context)
+        else:
+            categories=Category.objects.all()
+            videos=VideoFiles.objects.all()
+            videos=videos.filter(channel__visibility=True)
+            paginator=Paginator(videos, 2)
+            page_number=request.GET.get('page')
+            page_videos=paginator.get_page(page_number)
+            context={
+                'categories': categories,
+                'category_name': 'All',
+                'videos':page_videos
+            }
+            return render(request, 'main/videos_show.html', context)
+    except:
+        return redirect('video_show')
 
 def search_rs(request):
     if request.method=='GET':
         videos=VideoFiles.objects.filter(video_detail__title__icontains=request.GET['search'], channel__visibility=True)
         channel_search=Channel.objects.filter(name__icontains=request.GET['search'])
+        paginator=Paginator(videos, 2)
+        page_number=request.GET.get('page')
+        page_videos=paginator.get_page(page_number)
         context={
-            'videos':videos,
+            'videos':page_videos,
             'channel_search':channel_search,
             'categories':Category.objects.all(),
             'search_rs': request.GET['search']
         }
-    return render(request, 'search_rs.html', context)
+    return render(request, 'main/search_rs.html', context)
 
 def report_channel(request, slug):
     if not request.user.is_authenticated:

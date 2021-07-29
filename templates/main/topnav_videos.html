@@ -1,0 +1,46 @@
+<div class="
+    bg-primarybgh
+    text-gray-300
+    fixed
+    top-0
+    right-0
+    left-0
+    z-1040
+    w-full
+    h-9
+    leading-9
+    font-semibold
+  ">
+  <div class="xl:w-292.5 lg:w-242.5 md:w-187.5 mx-auto px-4">
+    <ul class="flex justify-start lg:justify-end items-center">
+      {% if user.is_authenticated %}
+      <!-- {% load account %}
+      <li class="px-2">
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}"
+          >{% user_display user %}</a
+        >
+      </li> -->
+      {% if not channel.name %}
+      <li class="px-2">
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}">{{ user }}</a>
+      </li>
+      {% else %}
+      <li class="px-2">
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}">{{ top_nav.name }}</a>
+      </li>
+      {% endif %}
+
+      <li class="px-2">
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_logout'%}?next={{request.get_full_path|urlencode}}"">Logout</a>
+      </li>
+      {% else %}
+      <li>
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'account_login' %}?next={{request.get_full_path|urlencode}}">Login</a>
+      </li>
+      <li>
+        <a class="ml-4 cursor-pointer flex-shrink-0" href="{% url 'account_signup' %}?next={{request.get_full_path|urlencode}}">Sign Up</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
