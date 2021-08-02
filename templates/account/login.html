@@ -30,7 +30,7 @@
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request.GET.next }}" />
       <div class="relative w-full h-10 my-4">
-        <input type="email" name="login" placeholder="E-mail" class="
+        <input type="email" name="login" placeholder="E-mail address" class="
             w-full
             h-full
             border border-gray-300
@@ -69,7 +69,7 @@
         </div>
       </div>
       <div class="text-blue-400">
-        <a href="{% url 'account_reset_password' %}">Forgot password?</a>
+        <a href="{% url 'account_reset_password' %}?next={{request.GET.next|urlencode}}">Forgot password?</a>
       </div>
       <div class="my-8 h-10 relative overflow-hidden rounded-md">
         <button type="submit" class="
