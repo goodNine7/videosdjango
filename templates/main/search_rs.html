@@ -26,7 +26,7 @@
                 </div>
                 {%else%}
                 <div class="font-semibold capitalize hover:underline"><a href=" {% url 'channel' channel.slug %}">
-                    {{channel.name}}</a></div>
+                        {{channel.name}}</a></div>
                 {%endif%}
                 <div class="flex text-sm space-x-1">
                     <div class="text-gray-500 flex-shrink-0">{{channel.num_subcribers}} subcribers</div>
@@ -50,6 +50,7 @@
 {%endif%}
 
 {%if videos%}
+{% if videos.paginator.num_pages > 1 %}
 <div class="pagination mt-2">
     <span class="step-links flex items-center justify-center">
         {% if videos.has_previous %}
@@ -77,6 +78,7 @@
         {% endif %}
     </span>
 </div>
+{%endif%}
 <div class="my-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
     {%for video in videos%}
     <div class="bg-white rounded shadow-md">
@@ -113,7 +115,7 @@
                 </div>
                 {%else%}
                 <div class="font-semibold capitalize hover:underline"><a href=" {{video.get_absolute_url}}">
-                    {{video.video_detail.title}}</a></div>
+                        {{video.video_detail.title}}</a></div>
                 {%endif%}
                 <div class="text-sm hover:underline"><a
                         href="{%url 'channel' video.channel.slug%}">{{video.channel.name}}</a></div>

@@ -57,7 +57,7 @@ class Channel(models.Model):
     description = models.TextField(blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     visibility=models.BooleanField(choices=((False,"private"), (True,"public")))
-    subcribers=models.ManyToManyField(User, related_name='subcribers')
+    subcribers=models.ManyToManyField(User, related_name='subcribers', blank=True)
 
     def __str__(self):
         return f"({self.slug}) - {self.name}"

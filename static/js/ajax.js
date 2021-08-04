@@ -42,11 +42,11 @@ $(document).ready(function(){
                     favorite=Math.round(100/(response.like_count+response.dislike_count))*response.like_count
                     if(isNaN(favorite)){
                         favorite=parseInt(0)
-                        target.find('.love-text').text("0%")
+                        $('.love-text-vid').text("0%")
                     }
                     else{
                         favorite=parseInt(favorite)
-                        target.find('.love-text').text(favorite + "%")
+                        $('.love-text-vid').text(favorite + "%")
                     }
                     document.getElementById('love-bar').style.width=favorite + "%"
                 }
@@ -91,11 +91,11 @@ $(document).ready(function(){
                     favorite=Math.round(100/(response.like_count+response.dislike_count))*response.like_count
                     if(isNaN(favorite)){
                         favorite=parseInt(0)
-                        target.find('.love-text').text("0%")
+                        $('.love-text-vid').text("0%")
                     }
                     else{
                         favorite=parseInt(favorite)
-                        target.find('.love-text').text(favorite + "%")
+                        $('.love-text-vid').text(favorite + "%")
                     }
                     document.getElementById('love-bar').style.width=favorite + "%"
                 } 

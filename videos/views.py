@@ -496,7 +496,7 @@ def edit_myvideos(request, video_id):
             'other_category': other_category,
             'videos': videos
         }
-        return render(request, 'videos_edit.html', context)
+        return render(request, 'main/videos_edit.html', context)
     return redirect(reverse('channel', args=[str(request.user)]))
 
 def processing_edit_myvideos(request, video_id):
