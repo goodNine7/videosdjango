@@ -186,7 +186,7 @@
                 </div>
                 <div class="comment-content" id="comment-content">
                     {%for comment in my_video.video_comment.all|sort_by:'-created_at'%}
-                    <div class="flex space-x-4 mb-8">
+                    <div class="flex space-x-4 mb-8 bg-white px-2 py-4 rounded-2xl">
                         <div class="rounded-full overflow-hidden flex-shrink-0">
                             <a href="{% url 'channel' comment.channel.slug%}"><img src="{{comment.channel.avatar.url}}"
                                     alt="" class="w-12 h-12 object-cover" /></a>

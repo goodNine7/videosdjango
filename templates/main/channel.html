@@ -102,12 +102,42 @@
         {%block main%}
         <div class="bg-primarybgu px-4 py-2 border-b border-gray-200 flex justify-between">
           <div>Videos</div>
-          <div class="text-blue-400"><a href="#">View All...</a></div>
+          {%if videos%}
+          {% if videos.paginator.num_pages > 1 %}
+          <div class="pagination">
+            <span class="step-links flex items-center justify-center">
+              {% if videos.has_previous %}
+              <a href="{%url 'channel' channel.slug%}?page=1"
+                class="px-2 border border-gray-400 hover:bg-gray-300 delay-75 rounded-tl rounded-bl">&laquo;</a>
+              <!-- <a href="{%url 'channel' channel.slug%}?page={{ videos.previous_page_number }}"
+                            class="px-2 border border-gray-400 hover:bg-gray-300">Previous</a> -->
+              {% endif %}
+
+              {% for page in videos.paginator.num_pages|times %}
+              {%if videos.number == page %}
+              <a href="{%url 'channel' channel.slug%}?page={{ page }}"
+                class="px-2 border border-gray-400 text-white1 bg-green-500">{{page}}</a>
+              {%else%}
+              <a href="{%url 'channel' channel.slug%}?page={{ page }}"
+                class="px-2 border border-gray-400 hover:bg-gray-300 delay-75">{{page}}</a>
+              {%endif%}
+              {%endfor%}
+
+              {% if videos.has_next %}
+              <!-- <a href="{%url 'channel' channel.slug%}?page={{ videos.next_page_number }}"
+                            class="px-2 border border-gray-400 hover:bg-gray-300">Next</a> -->
+              <a href="{%url 'channel' channel.slug%}?page={{ videos.paginator.num_pages }}"
+                class="px-2 border border-gray-400 hover:bg-gray-300 delay-75 rounded-tr rounded-br">&raquo;</a>
+              {% endif %}
+            </span>
+          </div>
+          {%endif%}
+          {%endif%}
         </div>
         {%if videos%}
         {%if mychannel %}
         <div class="bg-white px-4 py-2 grid grid-cols-1 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 mb-8">
-          {%for video in videos|sort_by:'-uploaded'%}
+          {%for video in videos%}
           <div class="items bg-white rounded shadow-md">
             <div class="relative overflow-hidden">
               <a href="{{video.get_absolute_url}}">
@@ -149,7 +179,7 @@
               </div>
               {%else%}
               <div class="font-semibold capitalize hover:underline"><a href=" {{video.get_absolute_url}}">
-                {{video.video_detail.title}}</a></div>
+                  {{video.video_detail.title}}</a></div>
               {%endif%}
               <div class="flex text-xs">
                 <div class="text-gray-500 flex-shrink-0">{{video.view_count.count}} views</div>
@@ -191,7 +221,7 @@
               </div>
               {%else%}
               <div class="font-semibold capitalize hover:underline"><a href=" {{video.get_absolute_url}}">
-                {{video.video_detail.title}}</a></div>
+                  {{video.video_detail.title}}</a></div>
               {%endif%}
               <div class="flex text-xs">
                 <div class="text-gray-500 flex-shrink-0">{{video.view_count.count}} views</div>
@@ -209,7 +239,32 @@
 
         <div class=" bg-primarybgu px-4 py-2 border-b border-gray-200 flex justify-between">
           <div>Playlist</div>
-          <div class="text-blue-400"><a href="#">View All...</a></div>
+          {%if videos_in_playlist%}
+          {% if videos_in_playlist.paginator.num_pages > 1 %}
+          <div class="pagination">
+            <span class="step-links flex items-center justify-center">
+              {% if videos_in_playlist.has_previous %}
+              <a href="{%url 'channel' channel.slug%}?pages=1"
+                class="px-2 border border-gray-400 hover:bg-gray-300 delay-75 rounded-tl rounded-bl">&laquo;</a>
+              {% endif %}
+              {% for page in videos_in_playlist.paginator.num_pages|times %}
+              {%if videos_in_playlist.number == page %}
+              <a href="{%url 'channel' channel.slug%}?pages={{ page }}"
+                class="px-2 border border-gray-400 text-white1 bg-green-500">{{page}}</a>
+              {%else%}
+              <a href="{%url 'channel' channel.slug%}?pages={{ page }}"
+                class="px-2 border border-gray-400 hover:bg-gray-300 delay-75">{{page}}</a>
+              {%endif%}
+              {%endfor%}
+
+              {% if videos_in_playlist.has_next %}
+              <a href="{%url 'channel' channel.slug%}?pages={{ videos_in_playlist.paginator.num_pages }}"
+                class="px-2 border border-gray-400 hover:bg-gray-300 delay-75 rounded-tr rounded-br">&raquo;</a>
+              {% endif %}
+            </span>
+          </div>
+          {%endif%}
+          {%endif%}
         </div>
         {%if videos_in_playlist%}
         {%if mychannel%}
@@ -250,10 +305,10 @@
               </div>
               {%else%}
               <div class="font-semibold capitalize hover:underline"><a href=" {{video.get_absolute_url}}">
-                {{video.video_detail.title}}</a></div>
+                  {{video.video_detail.title}}</a></div>
               {%endif%}
               <div class="text-sm hover:underline"><a
-                href="{%url 'channel' video.channel.slug%}">{{video.channel.name}}</a></div>
+                  href="{%url 'channel' video.channel.slug%}">{{video.channel.name}}</a></div>
               <div class="flex text-xs">
                 <div class="text-gray-500 flex-shrink-0">{{video.view_count.count}} views</div>
                 <div>&nbsp;&bull;&nbsp;</div>
@@ -294,7 +349,7 @@
               </div>
               {%else%}
               <div class="font-semibold capitalize hover:underline"><a href=" {{video.get_absolute_url}}">
-                {{video.video_detail.title}}</a></div>
+                  {{video.video_detail.title}}</a></div>
               {%endif%}
               <div class="flex text-xs">
                 <div class="text-gray-500 flex-shrink-0">{{video.view_count.count}} views</div>
@@ -322,5 +377,5 @@
 {% block extra_body %}
 <script src=" https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
 </script>
-          <script src="{%static 'js/ajax.js/'%}"></script>
-          {% endblock %}
+<script src="{%static 'js/ajax.js/'%}"></script>
+{% endblock %}

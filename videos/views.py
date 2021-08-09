@@ -58,40 +58,52 @@ def channel(request, slug):
         current_user = request.user
         mychannel = Channel.objects.get(user=current_user.id)
         if slug == current_user.username:
-            videos = allvideos.filter(channel__slug=slug)
+            videos = allvideos.filter(channel__slug=slug).order_by('-uploaded')
+            paginator=Paginator(videos, 3)
+            page_number=request.GET.get('page')
+            page_videos=paginator.get_page(page_number)
             try:
                 videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel).video.all())
+                paginator_playlist=Paginator(videos_in_playlist, 3)
+                page_number_playlist=request.GET.get('pages')
+                page_videos_playlist=paginator_playlist.get_page(page_number_playlist)
             except:
                 videos_in_playlist=''
             context = {
                 'channel': channel,
                 'mychannel': mychannel,
                 'top_nav': mychannel,
-                'videos': videos,
+                'videos': page_videos,
                 'categories': Category.objects.all(),
                 'last_login': last_login,
-                'videos_in_playlist': videos_in_playlist,
+                'videos_in_playlist': page_videos_playlist,
                 'views_point': views_point
             }
         else:
-            videos = allvideos.filter(channel__slug=slug, video_detail__visibility=True)
+            videos = allvideos.filter(channel__slug=slug, video_detail__visibility=True).order_by('-uploaded')
+            paginator=Paginator(videos, 3)
+            page_number=request.GET.get('page')
+            page_videos=paginator.get_page(page_number)
             context = {
                 'channel': channel,
                 'mychannel': '',
                 'top_nav': mychannel,
-                'videos': videos,
+                'videos': page_videos,
                 'categories': Category.objects.all(),
                 'last_login': last_login,
                 'videos_in_playlist': videos_in_playlist,
                 'views_point': views_point
             }
     else:
-        videos = allvideos.filter(channel__slug=slug, video_detail__visibility=True)
+        videos = allvideos.filter(channel__slug=slug, video_detail__visibility=True).order_by('-uploaded')
+        paginator=Paginator(videos, 3)
+        page_number=request.GET.get('page')
+        page_videos=paginator.get_page(page_number)
         context = {
             'channel': channel,
             'mychannel': '',
             'top_nav': '',
-            'videos': videos,
+            'videos': page_videos,
             'categories': Category.objects.all(),
             'last_login': last_login,
             'videos_in_playlist': videos_in_playlist,
@@ -99,7 +111,6 @@ def channel(request, slug):
         }
     return render(request, 'main/channel.html', context)
     
-
 def channel_edit(request, slug):
     if request.user.username == slug:
         mychannel = Channel.objects.get(slug=slug)
@@ -161,11 +172,20 @@ def upload_video(request):
         if(str(messages) != "You have successfully uploaded a video"):
             messages=''
     channel = Channel.objects.get(user=request.user.id)
+    last_login=User.objects.get(username=channel.slug).last_login
+    videos_channel=VideoFiles.objects.filter(channel=channel)
+    views_point=int(len(ViewCount.objects.filter(video__in=videos_channel))/int(10))
+    if(views_point == int(0)):
+        views_point=int(0)
+    elif(views_point < int(1)):
+        views_point=int(1)
     context = {
         'channel': channel,
         'mychannel': channel,
         'top_nav': channel,
         'success_message': messages,
+        'last_login': last_login,
+        'views_point': views_point,
         'categories': Category.objects.all()
     }
     return render(request, 'main/file_upload.html', context)
@@ -491,6 +511,14 @@ def del_myvideos(request):
     return redirect(reverse('channel', args=[str(request.user)]))
 
 def edit_myvideos(request, video_id):
+    channel = Channel.objects.get(user=request.user.id)
+    last_login=User.objects.get(username=channel.slug).last_login
+    videos_channel=VideoFiles.objects.filter(channel=channel)
+    views_point=int(len(ViewCount.objects.filter(video__in=videos_channel))/int(10))
+    if(views_point == int(0)):
+        views_point=int(0)
+    elif(views_point < int(1)):
+        views_point=int(1)
     if request.method == "POST":
         channel=Channel.objects.get(slug=request.user)
         videos=VideoFiles.objects.get(id=video_id)
@@ -499,6 +527,8 @@ def edit_myvideos(request, video_id):
             'channel': channel,
             'mychannel': channel,
             'top_nav': channel,
+            'last_login': last_login,
+            'views_point': views_point,
             'categories': Category.objects.all(),
             'other_category': other_category,
             'videos': videos

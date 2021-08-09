@@ -211,7 +211,7 @@ $(document).ready(function(){
                     $('#comment').val('')
                     let cmt_content=document.getElementById('comment-content')
                     let current_content=cmt_content.innerHTML
-                    let new_content='<div class="flex space-x-4 mb-8"><div class="rounded-full overflow-hidden flex-shrink-0"><a href="/channel/{0}/"><img src="{1}" alt="" class="w-12 h-12 object-cover"></a></div><div class="break-all"><div class="flex space-x-2 items-center"><h2 class="capitalize font-semibold text-xl">{2}</h2><span>0&nbsp;minutes ago</span></div><span class="py-1">{3}</span></div></div>'.format(response.channel_slug, response.channel_avatar, response.channel_name, comment)
+                    let new_content='<div class="flex space-x-4 mb-8 bg-white px-2 py-4 rounded-2xl"><div class="rounded-full overflow-hidden flex-shrink-0"><a href="/channel/{0}/"><img src="{1}" alt="" class="w-12 h-12 object-cover"></a></div><div class="break-all"><div class="flex space-x-2 items-center"><a href="/channel/{2}/" class="hover:underline"><h2 class="capitalize font-semibold text-xl">{3}</h2></a><span>0&nbsp;minutes ago</span></div><span class="py-1">{4}</span></div></div>'.format(response.channel_slug, response.channel_avatar, response.channel_slug, response.channel_name, comment)
                     cmt_content.innerHTML=new_content+current_content
                 }
             },
@@ -335,6 +335,7 @@ $(document).ready(function(){
                     if(target_in_playlist.length){
                         target_in_playlist.closest('.items').remove()
                     }
+                    location.reload();
                 },
                 error:function(response){
                     console.log('Failed', response)
