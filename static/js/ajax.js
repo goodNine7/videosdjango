@@ -1,5 +1,11 @@
 $(document).ready(function(){
     
+    $('textarea').bind('keypress', function(e) {
+        if ((e.keyCode || e.which) == 13) {
+          event.preventDefault();
+        }
+      });
+
     String.prototype.format = function() {
         var formatted = this;
         for( var arg in arguments ) {
@@ -189,36 +195,54 @@ $(document).ready(function(){
         const comment=$('#comment').val()
         const token=$('input[name=csrfmiddlewaretoken]').val()
         const url=$(this).attr('action')
-
-        $.ajax({
-            method:"POST",
-            url:url,
-            headers:{'X-CSRFToken':token},
-            data:{
-                video_id:video_id,
-                comment:comment
-            },
-            success:function(response){
-                if(response.login_required){
-                    window.location.href=response.login_required
-                }
-                else if(response.blocked){
-                    $('#comment').val('')
-                    alert(response.blocked)
-                }
-                else{
-                    $('#total-cmt').text(response.total_cmt + ' comments')
-                    $('#comment').val('')
-                    let cmt_content=document.getElementById('comment-content')
-                    let current_content=cmt_content.innerHTML
-                    let new_content='<div class="flex space-x-4 mb-8 bg-white px-2 py-4 rounded-2xl"><div class="rounded-full overflow-hidden flex-shrink-0"><a href="/channel/{0}/"><img src="{1}" alt="" class="w-12 h-12 object-cover"></a></div><div class="break-all"><div class="flex space-x-2 items-center"><a href="/channel/{2}/" class="hover:underline"><h2 class="capitalize font-semibold text-xl">{3}</h2></a><span>0&nbsp;minutes ago</span></div><span class="py-1">{4}</span></div></div>'.format(response.channel_slug, response.channel_avatar, response.channel_slug, response.channel_name, comment)
-                    cmt_content.innerHTML=new_content+current_content
-                }
-            },
-            error:function(response){
-                console.log('Failed ', response)
+        const ban_list = ['dcm', 'dmm', 'dm']
+        let filter_cmt
+        let rs = []
+        filter_cmt = comment.split(' ')
+        if (!comment.trim()) {
+            $('#comment').val('')
+       }
+       else{
+        for (let i = 0; i < filter_cmt.length; i++) {
+            if (ban_list.indexOf(filter_cmt[i]) > -1) {
+                rs.push(filter_cmt[i])
             }
-        })
+          }
+        if(rs.length){
+            alert("Your comment contains BANNED words ({0}) !!!".format(rs.join(', ')))
+        }
+        else{
+            $.ajax({
+                method:"POST",
+                url:url,
+                headers:{'X-CSRFToken':token},
+                data:{
+                    video_id:video_id,
+                    comment:comment
+                },
+                success:function(response){
+                    if(response.login_required){
+                        window.location.href=response.login_required
+                    }
+                    else if(response.blocked){
+                        $('#comment').val('')
+                        alert(response.blocked)
+                    }
+                    else{
+                        $('#total-cmt').text(response.total_cmt + ' comments')
+                        $('#comment').val('')
+                        let cmt_content=document.getElementById('comment-content')
+                        let current_content=cmt_content.innerHTML
+                        let new_content='<div class="flex space-x-4 mb-8 bg-white px-2 py-4 rounded-2xl"><div class="rounded-full overflow-hidden flex-shrink-0"><a href="/channel/{0}/"><img src="{1}" alt="" class="w-12 h-12 object-cover"></a></div><div class="break-all"><div class="flex space-x-2 items-center"><a href="/channel/{2}/" class="hover:underline"><h2 class="capitalize font-semibold text-xl">{3}</h2></a><span>0&nbsp;minutes ago</span></div><span class="py-1">{4}</span></div></div>'.format(response.channel_slug, response.channel_avatar, response.channel_slug, response.channel_name, comment)
+                        cmt_content.innerHTML=new_content+current_content
+                    }
+                },
+                error:function(response){
+                    console.log('Failed ', response)
+                }
+            })
+        }
+       } 
     })
 
     $('.report-mes').click(function(e){
