@@ -18,13 +18,15 @@
             clip-rule="evenodd" />
         </svg></a></label>
     {% if socialaccount_providers %}
-    <div class="socialaccount_ballot">
-      <ul class="socialaccount_providers">
-        {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+    <div class="socialaccount_ballot flex justify-center">
+      <ul class="socialaccount_providers bg-red-400 hover:bg-red-500 text-center py-2 text-xl rounded-full text-white w-5/6 font-medium">
+        <li><a href="{%url 'google_login'%}">Login with Google</a></li>
+        <!-- {% include "socialaccount/snippets/provider_list.html" with process="login" %} -->
       </ul>
     </div>
+    <div class="flex justify-center items-center space-x-2 my-4 italic"><hr class="border-gray-400 w-1/4"><p>or</p><hr class="border-gray-400 w-1/4"></div>
     {% endif %}
-    <div class="text-xl font-bold text-center">Member Login</div>
+    <div class="text-xl font-bold text-center mb-4">Member Login</div>
     <!--<form action="{% url 'account_login' %}?next={{request.get_full_path|split_get_end:'='}}" class="login" method="POST">-->
     <form action="{% url 'account_login' %}?next={{request.GET.next|urlencode}}" class="login" method="POST">
       {% csrf_token %}
