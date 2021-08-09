@@ -14,30 +14,12 @@
         <div class="bg-primarybgu px-4 py-2 border-b border-gray-200">
           <span>{{channel.name}}</span>
         </div>
-        <div class="bg-white px-4 py-2 flex-col mb-4">
-          {% if mychannel %}
-          <ul class="text-sm font-semibold leading-8 pb-2 flex justify-start">
-            <li>
-              <a href="{%url 'channel_edit' channel.slug%}" class="text-blue-400">Edit Profile</a>
-            </li>
-            <!-- <li class="mx-2"><strong>·</strong></li>
-            <li>
-              <a href="#" class="text-blue-400">Change Avatar</a>
-            </li> -->
-          </ul>
-          {% else %}
-          <ul class="text-sm font-semibold leading-8 pb-2 flex justify-start">
-            <!-- <li>
-              <a href="#" class="text-blue-400">Like</a>
-            </li>
-            <li class="mx-2"><strong>·</strong></li>
-            <li>
-              <a href="#" class="text-blue-400">Dislike</a>
-            </li> -->
-          </ul>
-          {% endif %}
+        <div class="bg-white px-4 py-2 mb-4">
           <div class="flex pb-2 justify-start space-x-4">
             <div class="avatar-channel">
+              <div class="bg-red-400 rounded mb-2 p-1 text-center text-white text-sm font-semibold">
+                {{views_point}} Coin
+              </div>
               <div class="rounded overflow-hidden"><img src="{{channel.avatar.url}}" alt=""
                   class="w-full h-30 object-cover" /></div>
               {%if not mychannel%}
@@ -60,6 +42,10 @@
                   </svg><span id="sub-text">Subcribe</span></button>
                 {%endif%}
               </form>
+              {%else%}
+              <div class="bg-green-600 hover:bg-green-700 rounded mt-2 p-1 text-center text-white text-sm font-medium">
+                <a href="{%url 'channel_edit' channel.slug%}">Edit Profile</a>
+              </div>
               {%endif%}
             </div>
             <div class="w-1/2 flex-shrink-0">

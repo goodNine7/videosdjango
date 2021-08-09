@@ -41,57 +41,64 @@ def home(request):
     return render(request, 'base.html', context)
 
 def channel(request, slug):
+    allvideos = VideoFiles.objects.all()
+    channel = Channel.objects.get(slug=slug)
     try:
-        allvideos = VideoFiles.objects.all()
-        channel = Channel.objects.get(slug=slug)
-        try:
-            videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel, visibility=True).video.all())
-        except:
-            videos_in_playlist=''
-        last_login=User.objects.get(username=slug).last_login
-        if request.user.id:
-            current_user = request.user
-            mychannel = Channel.objects.get(user=current_user.id)
-            if slug == current_user.username:
-                videos = allvideos.filter(channel__slug=slug)
-                try:
-                    videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel).video.all())
-                except:
-                    videos_in_playlist=''
-                context = {
-                    'channel': channel,
-                    'mychannel': mychannel,
-                    'top_nav': mychannel,
-                    'videos': videos,
-                    'categories': Category.objects.all(),
-                    'last_login': last_login,
-                    'videos_in_playlist': videos_in_playlist
-                }
-            else:
-                videos = allvideos.filter(channel__slug=slug, video_detail__visibility=True)
-                context = {
-                    'channel': channel,
-                    'mychannel': '',
-                    'top_nav': mychannel,
-                    'videos': videos,
-                    'categories': Category.objects.all(),
-                    'last_login': last_login,
-                    'videos_in_playlist': videos_in_playlist
-                }
+        videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel, visibility=True).video.all())
+    except:
+        videos_in_playlist=''
+    videos_channel=VideoFiles.objects.filter(channel=channel)
+    views_point=int(len(ViewCount.objects.filter(video__in=videos_channel))/int(10))
+    if(views_point == int(0)):
+        views_point=int(0)
+    elif(views_point < int(1)):
+        views_point=int(1)
+    last_login=User.objects.get(username=slug).last_login
+    if request.user.id:
+        current_user = request.user
+        mychannel = Channel.objects.get(user=current_user.id)
+        if slug == current_user.username:
+            videos = allvideos.filter(channel__slug=slug)
+            try:
+                videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel).video.all())
+            except:
+                videos_in_playlist=''
+            context = {
+                'channel': channel,
+                'mychannel': mychannel,
+                'top_nav': mychannel,
+                'videos': videos,
+                'categories': Category.objects.all(),
+                'last_login': last_login,
+                'videos_in_playlist': videos_in_playlist,
+                'views_point': views_point
+            }
         else:
             videos = allvideos.filter(channel__slug=slug, video_detail__visibility=True)
             context = {
                 'channel': channel,
                 'mychannel': '',
-                'top_nav': '',
+                'top_nav': mychannel,
                 'videos': videos,
                 'categories': Category.objects.all(),
                 'last_login': last_login,
-                'videos_in_playlist': videos_in_playlist
+                'videos_in_playlist': videos_in_playlist,
+                'views_point': views_point
             }
-        return render(request, 'main/channel.html', context)
-    except:
-        return redirect('index')
+    else:
+        videos = allvideos.filter(channel__slug=slug, video_detail__visibility=True)
+        context = {
+            'channel': channel,
+            'mychannel': '',
+            'top_nav': '',
+            'videos': videos,
+            'categories': Category.objects.all(),
+            'last_login': last_login,
+            'videos_in_playlist': videos_in_playlist,
+            'views_point': views_point
+        }
+    return render(request, 'main/channel.html', context)
+    
 
 def channel_edit(request, slug):
     if request.user.username == slug:
