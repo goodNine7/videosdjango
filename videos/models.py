@@ -143,4 +143,13 @@ class ReportChannel(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.channel}: {self.report_reason}"
+        return f"(By {self.reporter}) <{self.channel}> : {self.report_reason}"
+
+class ReportVideo(models.Model):
+    video=models.ForeignKey(VideoFiles, on_delete=CASCADE, related_name='report_video')
+    reporter=models.CharField(max_length=20)
+    report_reason=models.TextField()
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"(By {self.reporter}) <{self.video}> : {self.report_reason}"

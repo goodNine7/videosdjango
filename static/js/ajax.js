@@ -1,10 +1,10 @@
 $(document).ready(function(){
 
-    $(document).on('click', function (e) {
-        if ($(e.target).closest("#report-area").length === 0) {
-            $("#report-area").hide();
-        }
-    });
+    // $(document).on('click', function (e) {
+    //     if ($(e.target).closest("#report-area").length === 0) {
+    //         $("#report-area").addClass('hidden');
+    //     }
+    // });
 
     // textarea comment
     $('textarea').bind('keypress', function(e) {

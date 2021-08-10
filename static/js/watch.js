@@ -11,7 +11,7 @@ $(document).ready(function(){
             console.log('play')
             intervalHandle = setInterval(() => {
               savePosition(key, videoId, video.currentTime);
-            }, 5000)
+            }, 1000)
         })
       }, 100);
     

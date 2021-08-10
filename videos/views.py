@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import EditChannelForm
 from django.contrib.auth.models import User
-from videos.models import Channel, Playlist, ReportChannel, VideoComment, VideoFiles, VideoDetail, Category, ViewCount
+from videos.models import Channel, Playlist, ReportChannel, ReportVideo, VideoComment, VideoFiles, VideoDetail, Category, ViewCount
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
@@ -477,14 +477,39 @@ def report_channel(request, slug):
             }
             return JsonResponse(data, safe=False)
         else:
-            report_channel=ReportChannel(channel=channel, reporter=request.user, report_reason=report_reason)
-            report_channel.save()
+            ReportChannel.objects.get_or_create(channel=channel, reporter=request.user, report_reason=report_reason)
             data={
                 'success_mes': 'You have successfully reported.'
             }
             return JsonResponse(data, safe=False)
 
     return redirect(reverse('channel', args=[str(slug)]))
+
+def report_video(request, videoId):
+    if not request.user.is_authenticated:
+            current_url=request.get_full_path()
+            login_url=reverse("account_login")
+            login_required="{}?next={}".format(login_url, current_url)
+            data={
+                'login_required':login_required
+            }
+            return JsonResponse(data, safe=False)
+    if request.method=="POST":
+        video=VideoFiles.objects.get(id=videoId)
+        report_reason=request.POST['report_reason']
+        if not(len(report_reason)):
+            data={
+                'text_required': 'Please fill out this field.'
+            }
+            return JsonResponse(data, safe=False)
+        else:
+            ReportVideo.objects.get_or_create(video=video, reporter=request.user, report_reason=report_reason)
+            data={
+                'success_mes': 'You have successfully reported.'
+            }
+            return JsonResponse(data, safe=False)
+
+    return redirect(reverse('video_watch', args=[str(videoId)]))
 
 def remove_videos_playlist(request):
     if request.method=="POST":
