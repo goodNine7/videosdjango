@@ -1,4 +1,11 @@
 $(document).ready(function(){
+
+    $(document).on('click', function (e) {
+        if ($(e.target).closest("#report-area").length === 0) {
+            $("#report-area").hide();
+        }
+    });
+
     // textarea comment
     $('textarea').bind('keypress', function(e) {
         if ((e.keyCode || e.which) == 13) {

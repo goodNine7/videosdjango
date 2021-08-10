@@ -236,31 +236,29 @@ def video_info_process(request):
     return redirect('upload_video')
 
 def video_watch_view(request, video_id):
+    video=get_object_or_404(VideoFiles, id=video_id, channel__visibility=True)
+    video_cat=video.video_detail.category.name
+    suggested_video=VideoFiles.objects.filter(video_detail__category__name=video_cat, channel__visibility=True).exclude(id=video_id)
+    ip=request.META['REMOTE_ADDR']
+    if not request.session.exists(request.session.session_key):
+        request.session.create() 
+    if not ViewCount.objects.filter(video=video, session=request.session.session_key):
+        view=ViewCount(video=video, ip_address=ip, session=request.session.session_key)
+        view.save()
+    video_views=ViewCount.objects.filter(video=video).count
     try:
-        video=get_object_or_404(VideoFiles, id=video_id, channel__visibility=True)
-        video_cat=video.video_detail.category.name
-        suggested_video=VideoFiles.objects.filter(video_detail__category__name=video_cat, channel__visibility=True).exclude(id=video_id)
-        ip=request.META['REMOTE_ADDR']
-        if not request.session.exists(request.session.session_key):
-            request.session.create() 
-        if not ViewCount.objects.filter(video=video, session=request.session.session_key):
-            view=ViewCount(video=video, ip_address=ip, session=request.session.session_key)
-            view.save()
-        video_views=ViewCount.objects.filter(video=video).count
-        try:
-            playlist=get_object_or_404(Playlist, channel=Channel.objects.get(slug=request.user))
-        except:
-            playlist=''
-        context={
-            "my_video": video,
-            "view_count": video_views,
-            "playlist": playlist,
-            "recommend_videos":suggested_video,
-            'categories': Category.objects.all()
-        }
-        return render(request, 'main/watch.html', context)
+        playlist=get_object_or_404(Playlist, channel=Channel.objects.get(slug=request.user))
     except:
-        return redirect('index')
+        playlist=''
+    context={
+        "my_video": video,
+        "view_count": video_views,
+        "playlist": playlist,
+        "recommend_videos":suggested_video,
+        'categories': Category.objects.all()
+    }
+    return render(request, 'main/watch.html', context)
+    
 
 def liked_video(request, id):
     user=request.user
