@@ -19,8 +19,8 @@
         </svg></a></label>
     {% if socialaccount_providers %}
     <div class="socialaccount_ballot flex justify-center">
-      <ul class="socialaccount_providers bg-red-400 hover:bg-red-500 text-center py-2 text-xl rounded-full text-white w-5/6 font-medium">
-        <li><a href="{%url 'google_login'%}">Login with Google</a></li>
+      <ul class="socialaccount_providers bg-red-400 hover:bg-red-500 text-center py-2 text-xl rounded-full text-white w-5/6 font-normal">
+        <li><a href="{%url 'google_login'%}">Login with <span class="font-bold italic">Google</span></a></li>
         <!-- {% include "socialaccount/snippets/provider_list.html" with process="login" %} -->
       </ul>
     </div>

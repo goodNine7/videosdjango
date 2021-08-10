@@ -7,7 +7,7 @@
         <div class="flex space-x-8 py-4">
             <div class="w-2/3 py-4">
                 <div class="video-area">
-                    <video controls autoplay class="w-full object-cover">
+                    <video controls autoplay class="w-full object-cover" id="currentvideo">
                         <source src="{{my_video.video.url}}" type="video/mp4">
                     </video>
                 </div>
@@ -255,4 +255,5 @@
 {% block extra_body %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{%static 'js/ajax.js/'%}"></script>
+<script src="{%static 'js/watch.js/'%}"></script>
 {% endblock %}

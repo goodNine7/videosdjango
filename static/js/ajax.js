@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    
+    // textarea comment
     $('textarea').bind('keypress', function(e) {
         if ((e.keyCode || e.which) == 13) {
           event.preventDefault();

@@ -192,7 +192,7 @@
         </div>
         {%else%}
         <div class="bg-white px-4 py-2 grid grid-cols-1 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 mb-8">
-          {%for video in videos|sort_by:'-uploaded'%}
+          {%for video in videos%}
           <div class="bg-white rounded shadow-md">
             <div class="relative overflow-hidden">
               <a href="{{video.get_absolute_url}}">

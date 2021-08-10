@@ -45,6 +45,9 @@ def channel(request, slug):
     channel = Channel.objects.get(slug=slug)
     try:
         videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel, visibility=True).video.all())
+        paginator_playlist=Paginator(videos_in_playlist, 3)
+        page_number_playlist=request.GET.get('pages')
+        page_videos_playlist=paginator_playlist.get_page(page_number_playlist)
     except:
         videos_in_playlist=''
     videos_channel=VideoFiles.objects.filter(channel=channel)
@@ -91,7 +94,7 @@ def channel(request, slug):
                 'videos': page_videos,
                 'categories': Category.objects.all(),
                 'last_login': last_login,
-                'videos_in_playlist': videos_in_playlist,
+                'videos_in_playlist': page_videos_playlist,
                 'views_point': views_point
             }
     else:
@@ -106,7 +109,7 @@ def channel(request, slug):
             'videos': page_videos,
             'categories': Category.objects.all(),
             'last_login': last_login,
-            'videos_in_playlist': videos_in_playlist,
+            'videos_in_playlist': page_videos_playlist,
             'views_point': views_point
         }
     return render(request, 'main/channel.html', context)
