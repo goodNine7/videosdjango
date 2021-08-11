@@ -2,9 +2,7 @@
 {%load static%}
 {% load custom_tags %}
 {%block search_name%}
-<h4>
-    Search results of {{search_rs}}
-</h4>
+<h4>Search results of {{search_rs}}</h4>
 {%endblock search_name%}
 {%block videos_content%}
 {%if channel_search%}
@@ -20,12 +18,12 @@
             <div class="w-full flex-col justify-center">
                 {% if channel.name|length > 55 %}
                 <div class="font-semibold capitalize tooltip hover:underline"><a
-                        href="#">{{channel.name|truncatechars:55}}</a>
+                        href="{% url 'channel' channel.slug %}">{{channel.name|truncatechars:55}}</a>
                     <p class="tooltiptext text-sm bg-gray-700 text-white py-2 px-3 rounded-lg">
                         {{channel.name}}</p>
                 </div>
                 {%else%}
-                <div class="font-semibold capitalize hover:underline"><a href=" {% url 'channel' channel.slug %}">
+                <div class="font-semibold capitalize hover:underline"><a href="{% url 'channel' channel.slug %}">
                         {{channel.name}}</a></div>
                 {%endif%}
                 <div class="flex text-sm space-x-1">
@@ -144,7 +142,8 @@
         <a href="{%url 'video_show'%}?category={{category.name}}" class="inline-block w-full p-4">{{category.name}}</a>
     </div>
     {%endfor%}
-</div>{%endblock categories_content%}
+</div>
+{%endblock categories_content%}
 {% block extra_body %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{%static 'js/ajax.js/'%}"></script>

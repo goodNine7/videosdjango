@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse
+from django.views.decorators.cache import cache_control
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import EditChannelForm
@@ -17,7 +18,7 @@ from django.urls import reverse
 # Create your views here.
 def home(request):
     allvideos = VideoFiles.objects.all()
-    allvideos = allvideos.filter(video_detail__visibility=True, channel__visibility=True)
+    allvideos = allvideos.filter(video_detail__visibility=True, channel__visibility=True).order_by('-uploaded')
     try:
         current_user = request.user
         try:
@@ -114,13 +115,74 @@ def channel(request, slug):
         }
     return render(request, 'main/channel.html', context)
     
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def channel_edit(request, slug):
     if request.user.username == slug:
         mychannel = Channel.objects.get(slug=slug)
         if request.method == "POST":
-            new_name = request.POST['name']
-            if Channel.objects.filter(name=new_name).exists():
-                if mychannel.name == new_name:
+            try:
+                if request.POST['username']:
+                    if request.POST['pwd1'] == request.POST['pwd2']:
+                        if int(len(request.POST['pwd1'])) > int(8.0):
+                            user=User.objects.get(username=request.POST['username'])
+                            user.set_password(request.POST['pwd1'])
+                            user.save()
+                            form = EditChannelForm(instance=mychannel)
+                            context = {
+                                'success_message': 'The User information was updated successfully.',
+                                'edit_form': form,
+                                'channel': mychannel,
+                                'mychannel': mychannel,
+                                'top_nav': mychannel,
+                                'categories': Category.objects.all()
+                            }
+                            request.session.flush()
+                            return redirect('account_login')
+                        else:
+                            form = EditChannelForm(instance=mychannel)
+                            context = {
+                                'error_message': 'This password is too short. It must contain at least 8 characters.',
+                                'edit_form': form,
+                                'channel': mychannel,
+                                'mychannel': mychannel,
+                                'top_nav': mychannel,
+                                'categories': Category.objects.all()
+                            }
+                    else:
+                        form = EditChannelForm(instance=mychannel)
+                        context = {
+                            'error_message': 'You must type the same password each time.',
+                            'edit_form': form,
+                            'channel': mychannel,
+                            'mychannel': mychannel,
+                            'top_nav': mychannel,
+                            'categories': Category.objects.all()
+                        }
+            except:
+                new_name = request.POST['name']
+                if Channel.objects.filter(name=new_name).exists():
+                    if mychannel.name == new_name:
+                        form = EditChannelForm(
+                            request.POST, request.FILES, instance=mychannel)
+                        if form.is_valid():
+                            form.save()
+                        context = {
+                            'success_message': 'The information was updated successfully.',
+                            'channel': mychannel,
+                            'mychannel': mychannel,
+                            'top_nav': mychannel,
+                            'categories': Category.objects.all()
+                        }
+                        # return render('channel', slug=request.user)
+                    else:
+                        context = {
+                            'error_message': 'Channel "{0}" already exists !'.format(new_name),
+                            'channel': mychannel,
+                            'mychannel': mychannel,
+                            'top_nav': mychannel,
+                            'categories': Category.objects.all()
+                        }
+                else:
                     form = EditChannelForm(
                         request.POST, request.FILES, instance=mychannel)
                     if form.is_valid():
@@ -132,28 +194,7 @@ def channel_edit(request, slug):
                         'top_nav': mychannel,
                         'categories': Category.objects.all()
                     }
-                    # return render('channel', slug=request.user)
-                else:
-                    context = {
-                        'error_message': 'Channel "{0}" already exists !'.format(new_name),
-                        'channel': mychannel,
-                        'mychannel': mychannel,
-                        'top_nav': mychannel,
-                        'categories': Category.objects.all()
-                    }
-            else:
-                form = EditChannelForm(
-                    request.POST, request.FILES, instance=mychannel)
-                if form.is_valid():
-                    form.save()
-                context = {
-                    'success_message': 'The information was updated successfully.',
-                    'channel': mychannel,
-                    'mychannel': mychannel,
-                    'top_nav': mychannel,
-                    'categories': Category.objects.all()
-                }
-                # return redirect('channel', slug=request.user)
+                    # return redirect('channel', slug=request.user)
         else:
             form = EditChannelForm(instance=mychannel)
             context = {
@@ -238,7 +279,7 @@ def video_info_process(request):
 def video_watch_view(request, video_id):
     video=get_object_or_404(VideoFiles, id=video_id, channel__visibility=True)
     video_cat=video.video_detail.category.name
-    suggested_video=VideoFiles.objects.filter(video_detail__category__name=video_cat, channel__visibility=True).exclude(id=video_id)
+    suggested_video=VideoFiles.objects.filter(video_detail__category__name=video_cat, channel__visibility=True).order_by('-uploaded').exclude(id=video_id)
     ip=request.META['REMOTE_ADDR']
     if not request.session.exists(request.session.session_key):
         request.session.create() 
@@ -413,42 +454,58 @@ def video_comment(request, id):
     return redirect(reverse("video_watch", args=[str(id)]))
 
 def video_show(request):
-    try:
-        if request.GET.get('category'):
-            category_name=request.GET['category']
-            categories=Category.objects.all()
-            category=Category.objects.get(name=category_name)
-            videos=VideoFiles.objects.filter(video_detail__category=category, channel__visibility=True)
-            paginator=Paginator(videos, 2)
-            page_number=request.GET.get('page')
-            page_videos=paginator.get_page(page_number)
-            context={
-                'categories':categories,
-                'category_name':category_name,
-                'videos':page_videos
-            }
-            return render(request, 'main/videos_show_by_cat.html', context)
-        else:
-            categories=Category.objects.all()
-            videos=VideoFiles.objects.all()
-            videos=videos.filter(channel__visibility=True)
-            paginator=Paginator(videos, 2)
-            page_number=request.GET.get('page')
-            page_videos=paginator.get_page(page_number)
-            context={
-                'categories': categories,
-                'category_name': 'All',
-                'videos':page_videos
-            }
-            return render(request, 'main/videos_show.html', context)
-    except:
-        return redirect('video_show')
+    # try:
+    if request.GET.get('category'):
+        category_name=request.GET['category']
+        categories=Category.objects.all()
+        category=Category.objects.get(name=category_name)
+        videos=VideoFiles.objects.filter(video_detail__category=category, channel__visibility=True).order_by('-uploaded')
+        paginator=Paginator(videos, 3)
+        page_number=request.GET.get('page')
+        page_videos=paginator.get_page(page_number)
+        context={
+            'categories':categories,
+            'category_name':category_name,
+            'videos':page_videos
+        }
+        return render(request, 'main/videos_show_by_cat.html', context)
+    elif request.GET.get('favorite'):
+        user=User.objects.all()
+        print(user)
+        videos = VideoFiles.objects.all()
+        videos = videos.filter(channel__visibility=True).order_by('-uploaded')
+        favorite_videos = []
+        for x in videos:
+            if int(x.favorite_percent()) > int(60):
+                favorite_videos.append(x)
+        paginator=Paginator(favorite_videos, 4)
+        page_number=request.GET.get('page')
+        page_videos=paginator.get_page(page_number)
+        context = {
+            'videos': page_videos
+        }
+        return render(request, 'main/videos_show_by_favorite.html', context)
+    else:
+        categories=Category.objects.all()
+        videos=VideoFiles.objects.all()
+        videos=videos.filter(channel__visibility=True).order_by('-uploaded')
+        paginator=Paginator(videos, 3)
+        page_number=request.GET.get('page')
+        page_videos=paginator.get_page(page_number)
+        context={
+            'categories': categories,
+            'category_name': 'All',
+            'videos':page_videos
+        }
+        return render(request, 'main/videos_show.html', context)
+    # except:
+    #     return redirect('video_show')
 
 def search_rs(request):
     if request.method=='GET':
-        videos=VideoFiles.objects.filter(video_detail__title__icontains=request.GET['search'], channel__visibility=True)
+        videos=VideoFiles.objects.filter(video_detail__title__icontains=request.GET['search'], channel__visibility=True).order_by('-uploaded')
         channel_search=Channel.objects.filter(name__icontains=request.GET['search'])
-        paginator=Paginator(videos, 2)
+        paginator=Paginator(videos, 3)
         page_number=request.GET.get('page')
         page_videos=paginator.get_page(page_number)
         context={

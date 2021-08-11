@@ -7,21 +7,25 @@
 <div class="pagination mb-6">
     <span class="step-links flex items-center justify-center">
         {% if videos.has_previous %}
-        <a href="{%url 'video_show'%}?category={{category_name}}&page=1" class="px-2 border border-gray-400 hover:bg-gray-300 delay-75 rounded-tl rounded-bl">&laquo;</a>
+        <a href="{%url 'video_show'%}?category={{category_name}}&page=1"
+            class="px-2 border border-gray-400 hover:bg-gray-300 delay-75 rounded-tl rounded-bl">&laquo;</a>
         <!-- <a href="{%url 'video_show'%}?category={{category_name}}&page={{ videos.previous_page_number }}" class="px-2 border border-gray-400 hover:bg-gray-300">Previous</a> -->
         {% endif %}
-        
+
         {% for page in videos.paginator.num_pages|times %}
         {%if videos.number == page %}
-        <a href="{%url 'video_show'%}?category={{category_name}}&page={{ page }}" class="px-2 border border-gray-400 text-white bg-green-500">{{page}}</a>
+        <a href="{%url 'video_show'%}?category={{category_name}}&page={{ page }}"
+            class="px-2 border border-gray-400 text-white bg-green-500">{{page}}</a>
         {%else%}
-        <a href="{%url 'video_show'%}?category={{category_name}}&page={{ page }}" class="px-2 border border-gray-400 delay-75 hover:bg-gray-300">{{page}}</a>
+        <a href="{%url 'video_show'%}?category={{category_name}}&page={{ page }}"
+            class="px-2 border border-gray-400 delay-75 hover:bg-gray-300">{{page}}</a>
         {%endif%}
         {%endfor%}
 
         {% if videos.has_next %}
         <!-- <a href="{%url 'video_show'%}?category={{category_name}}&page={{ videos.next_page_number }}" class="px-2 border border-gray-400 hover:bg-gray-300">Next</a> -->
-        <a href="{%url 'video_show'%}?category={{category_name}}&page={{ videos.paginator.num_pages }}" class="px-2 border border-gray-400 hover:bg-gray-300 delay-75 rounded-tr rounded-br">&raquo;</a>
+        <a href="{%url 'video_show'%}?category={{category_name}}&page={{ videos.paginator.num_pages }}"
+            class="px-2 border border-gray-400 hover:bg-gray-300 delay-75 rounded-tr rounded-br">&raquo;</a>
         {% endif %}
     </span>
 </div>
@@ -62,7 +66,7 @@
                 </div>
                 {%else%}
                 <div class="font-semibold capitalize hover:underline"><a href=" {{video.get_absolute_url}}">
-                    {{video.video_detail.title}}</a></div>
+                        {{video.video_detail.title}}</a></div>
                 {%endif%}
                 <div class="text-sm hover:underline"><a
                         href="{%url 'channel' video.channel.slug%}">{{video.channel.name}}</a></div>
@@ -96,7 +100,8 @@
     </div>
     {%endif%}
     {%endfor%}
-</div>{%endblock categories_content%}
+</div>
+{%endblock categories_content%}
 {% block extra_body %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{%static 'js/ajax.js/'%}"></script>

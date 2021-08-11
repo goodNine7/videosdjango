@@ -1,4 +1,5 @@
 {%extends 'main/channel.html'%}
+{%load static%}
 {%block content_channel%}
 <div class="mb-4">
     <ul class="flex justify-between border-b border-gray-300">
@@ -12,41 +13,88 @@
         </li>
     </ul>
 </div>
-<div class="w-full bg-white rounded shadow-md">
-    <form action="" method="POST" enctype="multipart/form-data">
+<div class="flex w-full bg-white rounded shadow-md">
+    <form action="{%url 'channel_edit' channel.slug %}" method="POST" enctype="multipart/form-data" class="m-0 w-1/2 p-4 border-r border-gray-300">
         {%csrf_token%}
-        <div class="flex w-full">
-            <div class="w-1/2 py-2 px-4">
-                <h1 class="text-2xl border-b border-gray-300 mb-4">Channel Information</h1>
-                <div class="flex w-full items-center justify-between mb-8">
-                    <label class="font-semibold pl-8 w-1/3" for="id_name">Name:</label>
-                    <div class="w-full"><textarea name="name" id="id_name" placeholder="Name" rows="1" required
-                            class="w-full border-gray-300 border focus:outline-none py-2 px-3 rounded bg-gray-50 resize-none overflow-hidden">{{channel.name}}</textarea>
-                    </div>
+        <h1 class="text-2xl border-b border-gray-300 mb-4">Channel Information</h1>
+        <div class="p-2">
+            <div class="flex w-full items-center justify-between mb-8">
+                <label class="font-semibold w-1/3" for="id_name">Name:</label>
+                <div class="w-full"><textarea name="name" id="id_name" placeholder="Name" rows="1" required
+                        class="w-full border-gray-300 border focus:outline-none py-2 px-3 rounded bg-gray-50 resize-none overflow-hidden">{{channel.name}}</textarea>
                 </div>
-                <div class="flex w-full items-center justify-between mb-8">
-                    <label class="font-semibold pl-8 w-1/3" for="id_description">Description:</label>
-                    <div class="w-full"><textarea name="description" id="id_description" rows="2"
-                            placeholder="Write something about your channel"
-                            class="w-full h-24 border-gray-300 border focus:outline-none py-2 px-3 rounded bg-gray-50 resize-none">{{channel.description}}</textarea>
-                    </div>
+            </div>
+            <div class="flex w-full items-center justify-between mb-8">
+                <label class="font-semibold w-1/3" for="id_description">Description:</label>
+                <div class="w-full"><textarea name="description" id="id_description" rows="2"
+                        placeholder="Write something about your channel"
+                        class="w-full h-24 border-gray-300 border focus:outline-none py-2 px-3 rounded bg-gray-50 resize-none">{{channel.description}}</textarea>
                 </div>
-                <div class="flex w-full items-center justify-between mb-8">
-                    <label class="font-semibold pl-8 w-1/3" for="id_avatar">Avatar:</label>
-                    <div class="w-full"><input type="file" accept="image/*" name="avatar" id="id_avatar" class="w-full">
-                    </div>
+            </div>
+            <div class="flex w-full items-center justify-between mb-8">
+                <label class="font-semibold w-1/3" for="id_avatar">Avatar:</label>
+                <div class="w-full"><input type="file" accept="image/*" name="avatar" id="id_avatar" class="w-full">
                 </div>
             </div>
         </div>
-        <div class="flex w-full">
-            <div class="flex w-1/2 items-center justify-between py-2 px-4">
-                <label class="font-semibold pl-8 w-1/3" for=""></label>
-                <div class="w-full"><button type="submit"
-                        class="text-white bg-blue-400 hover:bg-blue-500 px-3 py-2 rounded focus:outline-none">Save
-                        Changes</button>
+        <div class="flex items-center justify-center py-2 px-4">
+            <button type="submit" class="text-white bg-blue-400 hover:bg-blue-500 px-3 py-2 rounded focus:outline-none">
+                Save Changes
+            </button>
+        </div>
+    </form>
+    <form action="{%url 'channel_edit' channel.slug %}" method="POST" class="m-0 w-1/2 p-4">
+        {%csrf_token%}
+        <input type="hidden" name="username" id="username" value="{{user.username}}">
+        <h1 class="text-2xl border-b border-gray-300 mb-4">User Information</h1>
+        <div class="p-2">
+            <div class="flex w-full items-center justify-between mb-8">
+                <label class="font-semibold w-1/3" for="id_username">Username:</label>
+                <div class="w-full"><input type="text" readonly name="username" id="id_username" placeholder="Username" required
+                        class="w-full border-gray-300 border focus:outline-none py-2 px-3 rounded bg-gray-50 resize-none overflow-hidden" value="{{user.username}}"></input>
                 </div>
             </div>
+            <div class="flex w-full items-center justify-between mb-8">
+                <label class="font-semibold w-1/3" for="id_email">Email:</label>
+                <div class="w-full"><input type="text" readonly name="email" id="id_email" placeholder="Email" required
+                        class="w-full border-gray-300 border focus:outline-none py-2 px-3 rounded bg-gray-50 resize-none overflow-hidden" value="{{user.email}}"></input>
+                </div>
+            </div>
+            <div class="flex w-full items-center justify-between mb-8">
+                <label class="font-semibold w-1/3" for="id_pwd1">New Password:</label>
+                <div class="w-full relative"><input type="password" name="pwd1" id="id_pwd1" placeholder="New Password" required
+                        class="w-full border-gray-300 border focus:outline-none py-2 px-3 rounded bg-gray-50 resize-none overflow-hidden"></input>
+                        <span toggle="#id_pwd1" class="absolute right-0 top-0 m-2 toggle-password">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                              </svg>
+                        </span>
+                </div>
+            </div>
+            <div class="flex w-full items-center justify-between mb-8">
+                <label class="font-semibold w-1/3" for="id_pwd2">Password Again:</label>
+                <div class="w-full relative"><input type="password" name="pwd2" id="id_pwd2" placeholder="New Password Again" required
+                        class="w-full border-gray-300 border focus:outline-none py-2 px-3 rounded bg-gray-50 resize-none overflow-hidden"></input>
+                        <span toggle="#id_pwd2" class="absolute right-0 top-0 m-2 toggle-password">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                              </svg>
+                        </span>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center justify-center py-2 px-4">
+            <button type="submit" class="text-white bg-blue-400 hover:bg-blue-500 px-3 py-2 rounded focus:outline-none">
+                Save Changes
+            </button>
         </div>
     </form>
 </div>
 {%endblock%}
+{% block extra_body %}
+<script src=" https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+</script>
+<script src="{%static 'js/ajax.js/'%}"></script>
+{% endblock %}
