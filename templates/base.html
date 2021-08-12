@@ -12,7 +12,7 @@
   {% block extra_head %}{% endblock %}
 </head>
 
-<body class="bg-gray-200 font-sans">
+<body class="bg-gray-200 font-sans h-full">
   <!-- content wrapper-->
   {% block body %} {% include 'main/topnav_videos.html'%}
   {% include 'main/navbar_videos.html' %}
@@ -42,7 +42,7 @@
   {% endif %}
   {%endblock message%}
   {% block content %}
-  <main class="w-full relative top-24 mt-4 overflow-hidden">
+  <main class="relative top-24 mt-4 overflow-hidden">
     <div class="xl:w-292.5 lg:w-242.5 md:w-187.5 mx-auto px-4">
       <div class="flex justify-between font-medium text-lg tracking-wide pb-2 border-b border-gray-300">
         <h4>Recommend Videos</h4>
@@ -163,12 +163,12 @@
       {%endif%}
     </div>
   </main>
-  {% endblock content %} {% endblock body %}
+  {% endblock content %}
+  {% endblock body %}
   {% block extra_body %}
   <script src=" https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
   </script>
   <script src="{%static 'js/ajax.js/'%}"></script>
   {% endblock %}
 </body>
-
 </html>

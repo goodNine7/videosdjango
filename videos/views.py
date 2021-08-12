@@ -45,12 +45,16 @@ def channel(request, slug):
     allvideos = VideoFiles.objects.all()
     channel = Channel.objects.get(slug=slug)
     try:
-        videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel, visibility=True).video.all())
+        top_nav=Channel.objects.get(user=request.user.id)
+    except:
+        top_nav=''
+    try:
+        videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel, visibility=True).video.all(), video_detail__visibility=True)
         paginator_playlist=Paginator(videos_in_playlist, 3)
         page_number_playlist=request.GET.get('pages')
         page_videos_playlist=paginator_playlist.get_page(page_number_playlist)
     except:
-        videos_in_playlist=''
+        page_videos_playlist=''
     videos_channel=VideoFiles.objects.filter(channel=channel)
     views_point=int(len(ViewCount.objects.filter(video__in=videos_channel))/int(10))
     if(views_point == int(0)):
@@ -59,6 +63,8 @@ def channel(request, slug):
         views_point=int(1)
     last_login=User.objects.get(username=slug).last_login
     if request.user.id:
+        channel_playlist=Channel.objects.get(user=request.user)
+        Playlist.objects.get_or_create(name=request.user.username, channel=channel_playlist, visibility=True)
         current_user = request.user
         mychannel = Channel.objects.get(user=current_user.id)
         if slug == current_user.username:
@@ -72,11 +78,11 @@ def channel(request, slug):
                 page_number_playlist=request.GET.get('pages')
                 page_videos_playlist=paginator_playlist.get_page(page_number_playlist)
             except:
-                videos_in_playlist=''
+                page_videos_playlist=''
             context = {
                 'channel': channel,
                 'mychannel': mychannel,
-                'top_nav': mychannel,
+                'top_nav': top_nav,
                 'videos': page_videos,
                 'categories': Category.objects.all(),
                 'last_login': last_login,
@@ -91,7 +97,7 @@ def channel(request, slug):
             context = {
                 'channel': channel,
                 'mychannel': '',
-                'top_nav': mychannel,
+                'top_nav': top_nav,
                 'videos': page_videos,
                 'categories': Category.objects.all(),
                 'last_login': last_login,
@@ -117,6 +123,10 @@ def channel(request, slug):
     
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def channel_edit(request, slug):
+    try:
+        top_nav=Channel.objects.get(user=request.user.id)
+    except:
+        top_nav=''
     if request.user.username == slug:
         mychannel = Channel.objects.get(slug=slug)
         if request.method == "POST":
@@ -133,7 +143,7 @@ def channel_edit(request, slug):
                                 'edit_form': form,
                                 'channel': mychannel,
                                 'mychannel': mychannel,
-                                'top_nav': mychannel,
+                                'top_nav': top_nav,
                                 'categories': Category.objects.all()
                             }
                             request.session.flush()
@@ -145,7 +155,7 @@ def channel_edit(request, slug):
                                 'edit_form': form,
                                 'channel': mychannel,
                                 'mychannel': mychannel,
-                                'top_nav': mychannel,
+                                'top_nav': top_nav,
                                 'categories': Category.objects.all()
                             }
                     else:
@@ -155,7 +165,7 @@ def channel_edit(request, slug):
                             'edit_form': form,
                             'channel': mychannel,
                             'mychannel': mychannel,
-                            'top_nav': mychannel,
+                            'top_nav': top_nav,
                             'categories': Category.objects.all()
                         }
             except:
@@ -166,11 +176,12 @@ def channel_edit(request, slug):
                             request.POST, request.FILES, instance=mychannel)
                         if form.is_valid():
                             form.save()
+                        top_nav=Channel.objects.get(user=request.user.id)
                         context = {
                             'success_message': 'The information was updated successfully.',
                             'channel': mychannel,
                             'mychannel': mychannel,
-                            'top_nav': mychannel,
+                            'top_nav': top_nav,
                             'categories': Category.objects.all()
                         }
                         # return render('channel', slug=request.user)
@@ -179,7 +190,7 @@ def channel_edit(request, slug):
                             'error_message': 'Channel "{0}" already exists !'.format(new_name),
                             'channel': mychannel,
                             'mychannel': mychannel,
-                            'top_nav': mychannel,
+                            'top_nav': top_nav,
                             'categories': Category.objects.all()
                         }
                 else:
@@ -187,11 +198,12 @@ def channel_edit(request, slug):
                         request.POST, request.FILES, instance=mychannel)
                     if form.is_valid():
                         form.save()
+                    top_nav=Channel.objects.get(user=request.user.id)
                     context = {
                         'success_message': 'The information was updated successfully.',
                         'channel': mychannel,
                         'mychannel': mychannel,
-                        'top_nav': mychannel,
+                        'top_nav': top_nav,
                         'categories': Category.objects.all()
                     }
                     # return redirect('channel', slug=request.user)
@@ -201,7 +213,7 @@ def channel_edit(request, slug):
                 'edit_form': form,
                 'channel': mychannel,
                 'mychannel': mychannel,
-                'top_nav': mychannel,
+                'top_nav': top_nav,
                 'categories': Category.objects.all()
             }
         return render(request, 'main/channel_edit.html', context)
@@ -210,6 +222,10 @@ def channel_edit(request, slug):
 
 @login_required
 def upload_video(request):
+    try:
+        top_nav=Channel.objects.get(user=request.user.id)
+    except:
+        top_nav=''
     messages=''
     if(list(get_messages(request))):
         messages=list(get_messages(request))[0]
@@ -226,7 +242,7 @@ def upload_video(request):
     context = {
         'channel': channel,
         'mychannel': channel,
-        'top_nav': channel,
+        'top_nav': top_nav,
         'success_message': messages,
         'last_login': last_login,
         'views_point': views_point,
@@ -277,9 +293,13 @@ def video_info_process(request):
     return redirect('upload_video')
 
 def video_watch_view(request, video_id):
+    try:
+        top_nav=Channel.objects.get(user=request.user.id)
+    except:
+        top_nav=''
     video=get_object_or_404(VideoFiles, id=video_id, channel__visibility=True)
     video_cat=video.video_detail.category.name
-    suggested_video=VideoFiles.objects.filter(video_detail__category__name=video_cat, channel__visibility=True).order_by('-uploaded').exclude(id=video_id)
+    suggested_video=VideoFiles.objects.filter(video_detail__category__name=video_cat, channel__visibility=True, video_detail__visibility=True).order_by('-uploaded').exclude(id=video_id)
     ip=request.META['REMOTE_ADDR']
     if not request.session.exists(request.session.session_key):
         request.session.create() 
@@ -293,6 +313,7 @@ def video_watch_view(request, video_id):
         playlist=''
     context={
         "my_video": video,
+        "top_nav": top_nav,
         "view_count": video_views,
         "playlist": playlist,
         "recommend_videos":suggested_video,
@@ -400,13 +421,13 @@ def addtoplaylist_view(request, id):
         }
         return JsonResponse(data, safe=False)
     if request.method=="POST":
-        channel=Channel.objects.get(slug=request.user)
+        channel=Channel.objects.get(slug=request.user.username)
         video_id=request.POST['video_id']
         videos=VideoFiles.objects.get(id=video_id)
         try:
             playlist=get_object_or_404(Playlist, channel=channel)
         except:
-            Playlist.objects.create(name=request.user, channel=channel, visibility=True)
+            Playlist.objects.create(name=request.user.username, channel=channel, visibility=True)
             playlist=get_object_or_404(Playlist, channel=channel)
         if videos in playlist.video.all():
             playlist.video.remove(videos)
@@ -455,25 +476,29 @@ def video_comment(request, id):
 
 def video_show(request):
     # try:
+    try:
+        top_nav=Channel.objects.get(user=request.user.id)
+    except:
+        top_nav=''
     if request.GET.get('category'):
         category_name=request.GET['category']
         categories=Category.objects.all()
         category=Category.objects.get(name=category_name)
-        videos=VideoFiles.objects.filter(video_detail__category=category, channel__visibility=True).order_by('-uploaded')
+        videos=VideoFiles.objects.filter(video_detail__category=category, channel__visibility=True, video_detail__visibility=True).order_by('-uploaded')
         paginator=Paginator(videos, 3)
         page_number=request.GET.get('page')
         page_videos=paginator.get_page(page_number)
         context={
             'categories':categories,
             'category_name':category_name,
-            'videos':page_videos
+            'videos':page_videos,
+            'top_nav': top_nav
         }
         return render(request, 'main/videos_show_by_cat.html', context)
     elif request.GET.get('favorite'):
-        user=User.objects.all()
-        print(user)
+        categories=Category.objects.all()
         videos = VideoFiles.objects.all()
-        videos = videos.filter(channel__visibility=True).order_by('-uploaded')
+        videos = videos.filter(channel__visibility=True, video_detail__visibility=True).order_by('-uploaded')
         favorite_videos = []
         for x in videos:
             if int(x.favorite_percent()) > int(60):
@@ -482,28 +507,35 @@ def video_show(request):
         page_number=request.GET.get('page')
         page_videos=paginator.get_page(page_number)
         context = {
-            'videos': page_videos
+            'categories':categories,
+            'videos': page_videos,
+            'top_nav': top_nav
         }
         return render(request, 'main/videos_show_by_favorite.html', context)
     else:
         categories=Category.objects.all()
         videos=VideoFiles.objects.all()
-        videos=videos.filter(channel__visibility=True).order_by('-uploaded')
+        videos=videos.filter(channel__visibility=True, video_detail__visibility=True).order_by('-uploaded')
         paginator=Paginator(videos, 3)
         page_number=request.GET.get('page')
         page_videos=paginator.get_page(page_number)
         context={
             'categories': categories,
             'category_name': 'All',
-            'videos':page_videos
+            'videos':page_videos,
+            'top_nav': top_nav
         }
         return render(request, 'main/videos_show.html', context)
     # except:
     #     return redirect('video_show')
 
 def search_rs(request):
+    try:
+        top_nav=Channel.objects.get(user=request.user.id)
+    except:
+        top_nav=''
     if request.method=='GET':
-        videos=VideoFiles.objects.filter(video_detail__title__icontains=request.GET['search'], channel__visibility=True).order_by('-uploaded')
+        videos=VideoFiles.objects.filter(video_detail__title__icontains=request.GET['search'], video_detail__visibility=True, channel__visibility=True).order_by('-uploaded')
         channel_search=Channel.objects.filter(name__icontains=request.GET['search'])
         paginator=Paginator(videos, 3)
         page_number=request.GET.get('page')
@@ -512,7 +544,8 @@ def search_rs(request):
             'videos':page_videos,
             'channel_search':channel_search,
             'categories':Category.objects.all(),
-            'search_rs': request.GET['search']
+            'search_rs': request.GET['search'],
+            'top_nav': top_nav
         }
     return render(request, 'main/search_rs.html', context)
 

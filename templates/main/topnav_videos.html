@@ -20,13 +20,9 @@
           >{% user_display user %}</a
         >
       </li> -->
-      {% if not channel.name %}
+      {% if top_nav %}
       <li class="px-2">
-        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}">{{ user }}</a>
-      </li>
-      {% else %}
-      <li class="px-2">
-        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}">{{ top_nav.name }}</a>
+        <a class="cursor-pointer flex-shrink-0" href="{% url 'channel' user%}">{{ top_nav.name}}</a>
       </li>
       {% endif %}
 
