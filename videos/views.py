@@ -19,6 +19,10 @@ from django.urls import reverse
 def home(request):
     allvideos = VideoFiles.objects.all()
     allvideos = allvideos.filter(video_detail__visibility=True, channel__visibility=True).order_by('-uploaded')
+    favourite_videos=[]
+    for x in allvideos:
+        if(int(x.favorite_percent()) > int(60.0)):
+            favourite_videos.append(x)
     try:
         current_user = request.user
         try:
@@ -31,13 +35,14 @@ def home(request):
             'channel': channel,
             'top_nav': channel,
             'videos': allvideos,
+            'favourite_videos': favourite_videos,
             'categories': Category.objects.all()
         }
     except:
         context = {
             'videos': allvideos,
+            'favourite_videos': favourite_videos,
             'categories': Category.objects.all()
-
         }
     return render(request, 'base.html', context)
 
@@ -49,8 +54,8 @@ def channel(request, slug):
     except:
         top_nav=''
     try:
-        videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel, visibility=True).video.all(), video_detail__visibility=True)
-        paginator_playlist=Paginator(videos_in_playlist, 3)
+        videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel, visibility=True).video.all(), video_detail__visibility=True, channel__visibility=True)
+        paginator_playlist=Paginator(videos_in_playlist, 6)
         page_number_playlist=request.GET.get('pages')
         page_videos_playlist=paginator_playlist.get_page(page_number_playlist)
     except:
@@ -69,12 +74,12 @@ def channel(request, slug):
         mychannel = Channel.objects.get(user=current_user.id)
         if slug == current_user.username:
             videos = allvideos.filter(channel__slug=slug).order_by('-uploaded')
-            paginator=Paginator(videos, 3)
+            paginator=Paginator(videos, 6)
             page_number=request.GET.get('page')
             page_videos=paginator.get_page(page_number)
             try:
-                videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel).video.all())
-                paginator_playlist=Paginator(videos_in_playlist, 3)
+                videos_in_playlist=allvideos.filter(id__in=Playlist.objects.get(channel=channel).video.all(), video_detail__visibility=True, channel__visibility=True)
+                paginator_playlist=Paginator(videos_in_playlist, 6)
                 page_number_playlist=request.GET.get('pages')
                 page_videos_playlist=paginator_playlist.get_page(page_number_playlist)
             except:
@@ -91,7 +96,7 @@ def channel(request, slug):
             }
         else:
             videos = allvideos.filter(channel__slug=slug, video_detail__visibility=True).order_by('-uploaded')
-            paginator=Paginator(videos, 3)
+            paginator=Paginator(videos, 6)
             page_number=request.GET.get('page')
             page_videos=paginator.get_page(page_number)
             context = {
@@ -106,7 +111,7 @@ def channel(request, slug):
             }
     else:
         videos = allvideos.filter(channel__slug=slug, video_detail__visibility=True).order_by('-uploaded')
-        paginator=Paginator(videos, 3)
+        paginator=Paginator(videos, 6)
         page_number=request.GET.get('page')
         page_videos=paginator.get_page(page_number)
         context = {
@@ -485,7 +490,7 @@ def video_show(request):
         categories=Category.objects.all()
         category=Category.objects.get(name=category_name)
         videos=VideoFiles.objects.filter(video_detail__category=category, channel__visibility=True, video_detail__visibility=True).order_by('-uploaded')
-        paginator=Paginator(videos, 3)
+        paginator=Paginator(videos, 6)
         page_number=request.GET.get('page')
         page_videos=paginator.get_page(page_number)
         context={
@@ -503,7 +508,7 @@ def video_show(request):
         for x in videos:
             if int(x.favorite_percent()) > int(60):
                 favorite_videos.append(x)
-        paginator=Paginator(favorite_videos, 4)
+        paginator=Paginator(favorite_videos, 8)
         page_number=request.GET.get('page')
         page_videos=paginator.get_page(page_number)
         context = {
@@ -516,7 +521,7 @@ def video_show(request):
         categories=Category.objects.all()
         videos=VideoFiles.objects.all()
         videos=videos.filter(channel__visibility=True, video_detail__visibility=True).order_by('-uploaded')
-        paginator=Paginator(videos, 3)
+        paginator=Paginator(videos, 6)
         page_number=request.GET.get('page')
         page_videos=paginator.get_page(page_number)
         context={
@@ -537,7 +542,7 @@ def search_rs(request):
     if request.method=='GET':
         videos=VideoFiles.objects.filter(video_detail__title__icontains=request.GET['search'], video_detail__visibility=True, channel__visibility=True).order_by('-uploaded')
         channel_search=Channel.objects.filter(name__icontains=request.GET['search'])
-        paginator=Paginator(videos, 3)
+        paginator=Paginator(videos, 6)
         page_number=request.GET.get('page')
         page_videos=paginator.get_page(page_number)
         context={
